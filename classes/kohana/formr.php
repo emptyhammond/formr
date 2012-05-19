@@ -4,7 +4,7 @@
  * Kohana_Formr class.
  *
  * Formr::create($model)->render($flavour);
- * Formr::edit($model)->render($flavour);
+ * Formr::edit($model, $id)->render($flavour);
  *
  */
 class Kohana_Formr
@@ -20,7 +20,7 @@ class Kohana_Formr
 	protected static $_column_names = array();
 	
 	protected static $_options = array(
-		'enctype' => 'application/x-www-form-urlencoded',
+		'enctype' => 'application/x-www-form-urlencoded', //application/x-www-form-urlencoded|multipart/form-data
 		'exclude' => array(),
 		'classes' => array(),
 		'labels' => array(),
@@ -30,6 +30,8 @@ class Kohana_Formr
 		'help' => array(),
 		'disabled' => array(),
 		'group_by' => array(),
+		'fieldset' => array(),
+		'additional' => array(),
 	);
 	
 	private function __construct($config)
@@ -39,8 +41,8 @@ class Kohana_Formr
 	
 	public static function setup($options)
 	{
-		self::$_options['classes'] = array_flip(self::column_names());
-		
+		self::$_options['classes'] = array_merge(array_flip(self::column_names()), array_flip(isset($options['additional']) ? $options['additional'] : array() )) ;
+
 		foreach(self::$_options['classes'] as &$class)
 		{
 			$class = '';
@@ -51,7 +53,7 @@ class Kohana_Formr
 		
 		if (isset($options['enctype']))
 		{
-			self::$_options['enctype'] = $options['enctype'];
+			self::$_options['enctype'] = isset($options['enctype']) ? $options['enctype'] : self::$_options['enctype'];
 		}
 		
 		if (isset($options['exclude']))
@@ -97,6 +99,16 @@ class Kohana_Formr
 		if (isset($options['group_by']))
 		{
 			self::$_options['group_by'] = array_merge(self::$_options['group_by'], $options['group_by']);
+		}
+		
+		if (isset($options['fieldset']))
+		{
+			self::$_options['fieldset'] = array_merge(self::$_options['fieldset'], $options['fieldset']);
+		}
+		
+		if (isset($options['additional']))
+		{
+			self::$_options['additional'] = array_merge(self::$_options['additional'], $options['additional']);
 		}
 		
 		if ($_POST)
@@ -206,6 +218,13 @@ class Kohana_Formr
 			}
 		}
 		unset($column);
+		
+		foreach(self::$_options['additional'] as $additional)
+		{
+			$column = array('column_name' => $additional);
+			$func = self::$_options['types'][$additional];
+			self::$_string .= $formr::$func($column);
+		}
 		
 		foreach(self::$_object->belongs_to() as $name => $model)
 		{

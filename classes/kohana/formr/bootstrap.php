@@ -18,7 +18,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function open($path = '', array $array = array())
 	{
-		$defaults = array('enctype' => 'application/x-www-form-urlencoded', 'class' => 'well form-horizontal', 'method' => false, 'legend' => ucwords(self::$_object->object_name()));
+		$defaults = array('class' => 'well form-horizontal', 'method' => false, 'legend' => ucwords(self::$_object->object_name()));
 		
 		$options = array_merge($defaults, $array);
 		
@@ -195,6 +195,35 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$string .= '<div class="controls">';
 		
 		$string .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+			Arr::merge(array(
+				'class' => self::$_options['classes'][$column['column_name']],
+				'maxlength' => $column['character_maximum_length'],
+			), $disabled));
+		
+		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$string .= '</div>';
+		$string .= '</div>';
+		
+		return $string;
+	}
+	
+	/**
+	 * password function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @return void
+	 */
+	protected static function password($column)
+	{
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+		
+		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$string .= self::label($column);
+		$string .= '<div class="controls">';
+		
+		$string .= Form::password($column['column_name'], null,
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => $column['character_maximum_length'],
