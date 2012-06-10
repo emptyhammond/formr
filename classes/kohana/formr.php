@@ -32,6 +32,7 @@ class Kohana_Formr
 		'group_by' => array(),
 		'fieldset' => array(),
 		'additional' => array(),
+		'legend' => ''
 	);
 	
 	private function __construct($config)
@@ -111,6 +112,8 @@ class Kohana_Formr
 			self::$_options['additional'] = array_merge(self::$_options['additional'], $options['additional']);
 		}
 		
+		self::$_options['legend'] = isset($options['legend']) ? $options['legend'] : ucwords(self::$_object->object_name());
+		
 		if ($_POST)
 		{
 			self::$_object->values($_POST);
@@ -153,7 +156,7 @@ class Kohana_Formr
 	{
 		$formr = 'Formr_'.ucfirst($flavour);
 		
-		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype']));
+		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype'], 'legend' => self::$_options['legend']));
 		
 		$hidden = array();
 		
