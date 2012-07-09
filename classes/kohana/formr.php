@@ -32,7 +32,7 @@ class Kohana_Formr
 		'group_by' => array(),
 		'fieldset' => array(),
 		'additional' => array(),
-		'legend' => ''
+		'legend' => '',
 	);
 	
 	private function __construct($config)
@@ -198,6 +198,8 @@ class Kohana_Formr
 						case 'tinyint':
 						case 'tinyint unsigned':
 						case 'tinyint signed':
+							self::$_string .= $formr::int($column);
+							break;
 						case 'float':
 						case 'double':
 							self::$_string .= $formr::number($column);

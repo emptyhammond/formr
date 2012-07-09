@@ -109,6 +109,31 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		return $string;
 	}
+	
+	protected static function int($column)
+	{
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+
+		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$string .= self::label($column);
+		$string .= '<div class="controls">';
+
+		$string .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+			Arr::merge(array(
+				'type' => 'number',
+				'min' => (isset($column['min']) ? $column['min'] : 0),
+				'max' => (isset($column['max']) ? $column['max'] : 99999999999999),
+				'step' => '1',
+				'class' => 'number '.self::$_options['classes'][$column['column_name']],
+			), $disabled));
+
+		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+
+		$string .= '</div>';
+		$string .= '</div>';
+
+		return $string;
+	}
 
 	/**
 	 * date function.
@@ -168,6 +193,33 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'email',
 				'class' => 'email '.self::$_options['classes'][$column['column_name']],
+			), $disabled));
+
+		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+
+		$string .= '</div>';
+		$string .= '</div>';
+
+		return $string;
+	}
+	
+	protected static function color($column)
+	{
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+
+		$value = (self::$_object->{$column['column_name']}
+		? self::$_object->{$column['column_name']}
+		: (isset($column['default']) ? $column['default'] : ''));
+
+		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$string .= self::label($column);
+		$string .= '<div class="controls">';
+
+		$string .= Form::input($column['column_name'], $value,
+			Arr::merge(array(
+				'type' => 'color',
+				'class' => 'color '.self::$_options['classes'][$column['column_name']],
+				'style' => 'height: 20px; width: 20px;'
 			), $disabled));
 
 		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
@@ -415,6 +467,8 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			$attributes = ($multi) ? array('multiple' => 'multiple') : array();
 
 			$attributes['name'] = $name = ($multi) ? $model->object_plural().'[]' : $relation['foreign_key'];
+			
+			$attributes['class'] = isset(self::$_options['classes'][$relation['relation_name']]) ? self::$_options['classes'][$relation['relation_name']] : '';
 
 			if ($_POST)
 			{
@@ -541,7 +595,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 	protected static function label($column)
 	{
-		$string = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array());
+		$string = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array('class' => 'control-label'));
 
 		return $string;
 	}
