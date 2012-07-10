@@ -168,6 +168,33 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		return $string;
 	}
+	
+	
+	protected static function datetime($column)
+	{
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+
+		$value = (self::$_object->{$column['column_name']}
+		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
+		: (isset($column['default']) ? $column['default'] : ''));
+
+		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$string .= self::label($column);
+		$string .= '<div class="controls">';
+
+		$string .= Form::input($column['column_name'], $value,
+			Arr::merge(array(
+				'type' => 'datetime',
+				'class' => 'datetime '.self::$_options['classes'][$column['column_name']],
+			), $disabled));
+
+		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+
+		$string .= '</div>';
+		$string .= '</div>';
+
+		return $string;
+	}
 
 	/**
 	 * email function.
