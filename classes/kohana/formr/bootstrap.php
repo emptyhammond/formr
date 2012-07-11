@@ -22,11 +22,11 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		$options = array_merge($defaults, $array);
 
-		$string = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
-		$string .= '<fieldset>';
-		$string .= '<legend>'.$options['legend'].'</legend>';
+		$output = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
+		$output .= '<fieldset>';
+		$output .= '<legend>'.$options['legend'].'</legend>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -38,10 +38,10 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function close()
 	{
-		$string = '</fieldset>';
-		$string .= '</form>';
+		$output = '</fieldset>';
+		$output .= '</form>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -53,12 +53,12 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function actions()
 	{
-		$string = '<div class="form-actions">';
-		$string .= self::submit();
-		$string .= self::reset();
-		$string .= '</div>';
+		$output = '<div class="form-actions">';
+		$output .= self::submit();
+		$output .= self::reset();
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -71,9 +71,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function hidden($column)
 	{
-		$string = Form::hidden($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')));
+		$output = Form::hidden($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')));
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -89,11 +89,11 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		$output .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
 			Arr::merge(array(
 				'type' => 'number',
 				'min' => (isset($column['min']) ? $column['min'] : 0),
@@ -102,23 +102,23 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'class' => 'number '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 	
 	protected static function int($column)
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		$output .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
 			Arr::merge(array(
 				'type' => 'number',
 				'min' => (isset($column['min']) ? $column['min'] : 0),
@@ -127,12 +127,12 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'class' => 'number '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -151,22 +151,22 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
 		: (isset($column['default']) ? $column['default'] : ''));
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'], $value,
+		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
 				'type' => 'date',
 				'class' => 'date '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 	
 	
@@ -178,22 +178,22 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
 		: (isset($column['default']) ? $column['default'] : ''));
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'], $value,
+		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
 				'type' => 'datetime',
 				'class' => 'datetime '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -212,22 +212,22 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		? self::$_object->{$column['column_name']}
 		: (isset($column['default']) ? $column['default'] : ''));
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'], $value,
+		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
 				'type' => 'email',
 				'class' => 'email '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 	
 	protected static function color($column)
@@ -238,23 +238,23 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		? self::$_object->{$column['column_name']}
 		: (isset($column['default']) ? $column['default'] : ''));
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'], $value,
+		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
 				'type' => 'color',
 				'class' => 'color '.self::$_options['classes'][$column['column_name']],
 				'style' => 'height: 20px; width: 20px;'
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -269,21 +269,21 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::input($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		$output .= Form::input($column['column_name'],(isset(self::$_object->{$column['column_name']}) ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
-				'maxlength' => $column['character_maximum_length'],
+				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : '8000',
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -298,21 +298,21 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::password($column['column_name'], null,
+		$output .= Form::password($column['column_name'], null,
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => $column['character_maximum_length'],
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -327,21 +327,21 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
 
-		$string .= Form::textarea($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		$output .= Form::textarea($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
-				'maxlength' => $column['character_maximum_length'],
+				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
 			), $disabled));
 
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -356,19 +356,19 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string  = '<div class="control-group">';
-        $string .= '<label class="control-label" for="'.$column['column_name'].'">'.ucwords($column['column_name']).'</label>';
-        $string .= '<div class="controls">';
-		$string .= '<label class="checkbox">';
+		$output  = '<div class="control-group">';
+        $output .= '<label class="control-label" for="'.$column['column_name'].'">'.ucwords($column['column_name']).'</label>';
+        $output .= '<div class="controls">';
+		$output .= '<label class="checkbox">';
 
-		$string .= '<input type="checkbox" name="'.$column['column_name'].'" id="'.$column['column_name'].'" value="1"'.( (boolean) self::$_object->{$column['column_name']} ? 'checked' : false).' class="'.self::$_options['classes'][$column['column_name']].(isset(self::$_options['disabled'][$column['column_name']]) ? ' disabled' : false).' "/>';
+		$output .= '<input type="checkbox" name="'.$column['column_name'].'" id="'.$column['column_name'].'" value="1"'.( (boolean) self::$_object->{$column['column_name']} ? 'checked' : false).' class="'.self::$_options['classes'][$column['column_name']].(isset(self::$_options['disabled'][$column['column_name']]) ? ' disabled' : false).' "/>';
 
-        $string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? (isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]) : '';
-		$string .= '</label>';
-		$string .= '</div>';
-		$string .= '</div>';
+        $output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? (isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]) : '';
+		$output .= '</label>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -383,18 +383,18 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label($column);
-		$string .= '<div class="controls">';
-		$string .= Form::file($column['column_name'],
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
+		$output .= Form::file($column['column_name'],
 			Arr::merge(array(
 				'class' => 'input-file '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -409,7 +409,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '';
+		$output = '';
 
 		$options = array();
 
@@ -423,24 +423,24 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		if (self::$_object->{$column['column_name']} === NULL)
 		{
-			$selected = array($column['column_default']);
+			$selected = $column['column_default'];
 		}
 		else
 		{
-			$selected = array(self::$_object->{$column['column_name']});
+			$selected = self::$_object->{$column['column_name']};
 		}
 
-		$string .= '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$string .= self::label(array('column_name' => $column['column_name']));
-		$string .= '<div class="controls">';
-		$string .= Form::select($column['column_name'], $options, $selected, $attributes);
-		$string .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']]))
+		$output .= '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label(array('column_name' => $column['column_name']));
+		$output .= '<div class="controls">';
+		$output .= Form::select($column['column_name'], $options, $selected, $attributes);
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']]))
 		? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>'
 		: '';
-		$string .= '</div>';
-		$string .= '</div>';
+		$output .= '</div>';
+		$output .= '</div>';
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -457,7 +457,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($relation['model'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
-		$string = '';
+		$output = '';
 
 		if( (bool) ORM::factory($relation['model'])->count_all())
 		{
@@ -526,19 +526,19 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				}
 			}
 
-			$string .= '<div class="control-group'.(isset(self::$_options['errors'][$relation['model']]) ? ' error': '').'">';
-			$string .= self::label(array('column_name' => $relation['relation_name']));
-			$string .= '<div class="controls">';
-			$string .= Form::select($name, $options, $selected, $attributes);
-			$string .= (isset(self::$_options['help'][$relation['model']]) or isset(self::$_options['errors'][$relation['model']]))
+			$output .= '<div class="control-group'.(isset(self::$_options['errors'][$relation['model']]) ? ' error': '').'">';
+			$output .= self::label(array('column_name' => $relation['relation_name']));
+			$output .= '<div class="controls">';
+			$output .= Form::select($name, $options, $selected, $attributes);
+			$output .= (isset(self::$_options['help'][$relation['model']]) or isset(self::$_options['errors'][$relation['model']]))
 			? '<p class="help-block">'.(isset(self::$_options['errors'][$relation['model']]) ? self::$_options['errors'][$relation['model']]: self::$_options['help'][$relation['model']]).'</p>'
 			: '';
-			$string .= '</div>';
-			$string .= '</div>';
+			$output .= '</div>';
+			$output .= '</div>';
 
 		}
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -552,7 +552,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function radial_group($relation)
 	{
-		$string = '';
+		$output = '';
 
 		if ( (bool) ORM::factory($relation['model'])->count_all())
 		{
@@ -562,22 +562,22 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = $relation['foreign_key'];
 
-			$string .= '<div class="control-group">';
-	        $string .= '<label class="control-label">'.ucwords($plural).'</label>';
-	        $string .= '<div class="controls">';
+			$output .= '<div class="control-group">';
+	        $output .= '<label class="control-label">'.ucwords($plural).'</label>';
+	        $output .= '<div class="controls">';
 
 	        foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
-		        $string .= '<label class="radio">';
-		        $string .= '<input type="radio" name="'.$plural.'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
-				$string .= ucwords($option->name);
-		        $string .= '</label>';
+		        $output .= '<label class="radio">';
+		        $output .= '<input type="radio" name="'.$plural.'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
+				$output .= ucwords($option->name);
+		        $output .= '</label>';
 			}
-	        $string .= '</div>';
-	        $string .= '</div>';
+	        $output .= '</div>';
+	        $output .= '</div>';
 		}
 
-		return $string;
+		return $output;
 	}
 
 	/**
@@ -591,7 +591,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function checkbox_group($relation)
 	{
-		$string = '';
+		$output = '';
 
 		if ( (bool) ORM::factory($relation['model'])->count_all())
 		{
@@ -601,43 +601,86 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = (isset($relation['foreign_key'])) ? $plural.'[]' : $relation['foreign_key'];
 
-			$string .= '<div class="control-group">';
-			$string .= '<label class="control-label" for="'.$plural.'">'.ucwords($plural).'</label>';
-			$string .= '<div class="controls">';
+			$output .= '<div class="control-group">';
+			$output .= '<label class="control-label" for="'.$plural.'">'.ucwords($plural).'</label>';
+			$output .= '<div class="controls">';
 
 			foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
-				$string .= '<label class="checkbox inline">';
-				$string .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked="checked"' : false).'> ';
-				$string .= ucwords($option->name);
-				$string .= '</label>';
+				$output .= '<label class="checkbox inline">';
+				$output .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked="checked"' : false).'> ';
+				$output .= ucwords($option->name);
+				$output .= '</label>';
 			}
 
-			$string .= '</div>';
-			$string .= '</div>';
+			$output .= '</div>';
+			$output .= '</div>';
 		}
 
-		return $string;
+		return $output;
+	}
+	
+	/**
+	 * autocomplete function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @return void
+	 */
+	protected static function autocomplete($column)
+	{
+		if (isset(self::$_options['sources'][$column['column_name']]))
+		{
+			if (Valid::url(self::$_options['sources'][$column['column_name']]))
+			{
+				$source = (string) file_get_contents(self::$_options['sources'][$column['column_name']]);
+			}
+			else //should be stringyfied json
+			{
+				$source = (string) self::$_options['sources'][$column['column_name']];
+			}
+		}
+		
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
+
+		$output .= Form::input($column['column_name'],(isset(self::$_object->{$column['column_name']}) ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+			Arr::merge(array(
+				'data-provide' => 'typeahead',
+				'class' => self::$_options['classes'][$column['column_name']],
+				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
+				'data-source' => $source,
+			), $disabled));
+
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
+
+		return $output;
 	}
 
 	protected static function label($column)
 	{
-		$string = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array('class' => 'control-label'));
+		$output = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array('class' => 'control-label'));
 
-		return $string;
+		return $output;
 	}
 
 	protected static function reset()
 	{
-		$string = Form::input('reset', 'Cancel', array('type' => 'reset', 'class' => 'btn')).' ';
+		$output = Form::input('reset', 'Cancel', array('type' => 'reset', 'class' => 'btn')).' ';
 
-		return $string;
+		return $output;
 	}
 
 	protected static function submit()
 	{
-		$string = Form::submit('save','Save', array('class' => 'btn btn-primary')).' ';
+		$output = Form::submit('save','Save', array('class' => 'btn btn-primary')).' ';
 
-		return $string;
+		return $output;
 	}
 }

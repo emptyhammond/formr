@@ -33,6 +33,7 @@ class Kohana_Formr
 		'fieldset' => array(),
 		'additional' => array(),
 		'legend' => '',
+		'sources' => array(),
 	);
 	
 	private function __construct($config)
@@ -113,6 +114,11 @@ class Kohana_Formr
 		}
 		
 		self::$_options['legend'] = isset($options['legend']) ? $options['legend'] : ucwords(self::$_object->object_name());
+		
+		if (isset($options['sources']))
+		{
+			self::$_options['sources'] = array_merge(self::$_options['sources'], $options['sources']);
+		}
 		
 		if ($_POST)
 		{
