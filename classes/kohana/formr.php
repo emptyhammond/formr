@@ -15,6 +15,8 @@ class Kohana_Formr
 	
 	protected static $_string;
 	
+	protected static $_output = array();
+	
 	protected static $_object;
 	
 	protected static $_column_names = array();
@@ -30,10 +32,12 @@ class Kohana_Formr
 		'help' => array(),
 		'disabled' => array(),
 		'group_by' => array(),
-		'fieldset' => array(),
+		'fieldsets' => array(),
 		'additional' => array(),
 		'legend' => '',
 		'sources' => array(),
+		'order' => false,
+		'values' => array(),
 	);
 	
 	private function __construct($config)
@@ -103,11 +107,6 @@ class Kohana_Formr
 			self::$_options['group_by'] = array_merge(self::$_options['group_by'], $options['group_by']);
 		}
 		
-		if (isset($options['fieldset']))
-		{
-			self::$_options['fieldset'] = array_merge(self::$_options['fieldset'], $options['fieldset']);
-		}
-		
 		if (isset($options['additional']))
 		{
 			self::$_options['additional'] = array_merge(self::$_options['additional'], $options['additional']);
@@ -120,9 +119,24 @@ class Kohana_Formr
 			self::$_options['sources'] = array_merge(self::$_options['sources'], $options['sources']);
 		}
 		
+		if (isset($options['order']))
+		{
+			self::$_options['order'] = $options['order'];
+		}
+		
+		if (isset($options['fieldsets']))
+		{
+			self::$_options['fieldsets'] = array_merge(self::$_options['fieldsets'], $options['fieldsets']);
+		}
+		
 		if ($_POST)
 		{
 			self::$_object->values($_POST);
+		}
+		
+		if (isset($options['values']))
+		{
+			self::$_options['values'] = array_merge(self::$_options['values'], $options['values']);
 		}
 	}
 	
@@ -162,8 +176,6 @@ class Kohana_Formr
 	{
 		$formr = 'Formr_'.ucfirst($flavour);
 		
-		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype'], 'legend' => self::$_options['legend']));
-		
 		$hidden = array();
 		
 		$belongs_to = array();
@@ -188,7 +200,7 @@ class Kohana_Formr
 				{
 					$type = self::$_options['types'][$column['column_name']];
 					
-					self::$_string .= $formr::$type($column);
+					self::$_output[$column['column_name']] = $formr::$type($column);
 				}
 				else
 				{
@@ -196,7 +208,7 @@ class Kohana_Formr
 					{
 						case 'hidden':
 						case $column['column_name'] === self::$_object->primary_key(): 
-							array_push($hidden, $formr::hidden($column));
+							self::$_output[$column['column_name']] = $formr::hidden($column);
 							break;
 						case 'int':
 						case 'int unsigned':
@@ -204,26 +216,26 @@ class Kohana_Formr
 						case 'tinyint':
 						case 'tinyint unsigned':
 						case 'tinyint signed':
-							self::$_string .= $formr::int($column);
+							self::$_output[$column['column_name']] = $formr::int($column);
 							break;
 						case 'float':
 						case 'double':
-							self::$_string .= $formr::number($column);
+							self::$_output[$column['column_name']] = $formr::number($column);
 							break;
 						case 'varchar':
-							self::$_string .= $formr::varchar($column);
+							self::$_output[$column['column_name']] = $formr::varchar($column);
 							break;
 						case 'date':
-							self::$_string .= $formr::date($column);
+							self::$_output[$column['column_name']] = $formr::date($column);
 							break;
 						case 'text':
-							self::$_string .= $formr::text($column);
+							self::$_output[$column['column_name']] = $formr::text($column);
 							break;
 						case 'enum':
-							self::$_string .= $formr::enum($column);
+							self::$_output[$column['column_name']] = $formr::enum($column);
 							break;
 						default:
-							self::$_string .= $formr::varchar($column);
+							self::$_output[$column['column_name']] = $formr::varchar($column);
 					}
 				}
 			}
@@ -234,7 +246,7 @@ class Kohana_Formr
 		{
 			$column = array('column_name' => $additional);
 			$func = self::$_options['types'][$additional];
-			self::$_string .= $formr::$func($column);
+			self::$_output[$column['column_name']] = $formr::$func($column);
 		}
 		
 		foreach(self::$_object->belongs_to() as $name => $model)
@@ -247,11 +259,11 @@ class Kohana_Formr
 				{
 					$type = self::$_options['types'][$model['foreign_key']];
 					
-					self::$_string .= $formr::$type($model);
+					self::$_output[$model['relation_name']] = $formr::$type($model);
 				}
 				else
 				{
-					self::$_string .= $formr::select($model, false);
+					self::$_output[$model['relation_name']] = $formr::select($model, false);
 				}
 			}
 		}
@@ -267,11 +279,11 @@ class Kohana_Formr
 				{
 					$type = self::$_options['types'][$model['foreign_key']];
 										
-					self::$_string .= $formr::$type($model);
+					self::$_output[$model['relation_name']] = $formr::$type($model);
 				}
 				else
 				{
-					self::$_string .= $formr::select($model, false);
+					self::$_output[$model['relation_name']] = $formr::select($model, false);
 				}
 			}
 		}
@@ -287,19 +299,64 @@ class Kohana_Formr
 				{
 					$type = self::$_options['types'][Inflector::plural($model['model'])];
 					
-					self::$_string .= $formr::$type($model, true);
+					self::$_output[$model['relation_name']] = $formr::$type($model, true);
 				}
 				else
 				{
-					self::$_string .= $formr::select($model, true);
+					self::$_output[$model['relation_name']] = $formr::select($model, true);
 				}
 			}
 		}
 		unset($model);
 		
-		self::$_string .= implode("\n", $hidden);
+		if (self::$_options['order'])
+		{
+			$order = array_flip(self::$_options['order']);
+			
+			foreach($order as $key => $val)
+			{
+				$order[$key] = isset(self::$_output[$key]) ? self::$_output[$key] : null;
+				unset(self::$_output[$key]);
+			}
+			unset($key, $val);
+			
+			foreach(self::$_output as $key => $val)
+			{
+				$order[$key] = self::$_output[$key];
+			}
+			unset($key, $val);
+			
+			self::$_output = $order;
+		}
 		
+		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype']));
+		
+		if (!(sizeof(self::$_options['fieldsets'] > 0)))
+		{
+			self::$_string .= '<fieldset>';
+			self::$_string .= '<legend>'.(isset(self::$_options['legend']) ? self::$_options['legend'] : $model).'</legend>';
+			self::$_string .= implode("\n", self::$_output);
+		}
+		else
+		{
+			foreach(self::$_options['fieldsets'] as $fieldset => $inputs)
+			{
+				self::$_string .= '<fieldset>';
+				self::$_string .= '<legend>'.$fieldset.'</legend>';
+				foreach($inputs as $input)
+				{
+					self::$_string .= self::$_output[$input];	
+				}
+				self::$_string .= '</fieldset>';
+			}
+		}
+				
 		self::$_string .= $formr::actions();
+		
+		if (!(sizeof(self::$_options['fieldsets'] > 0)))
+		{
+			self::$_string .= '</fieldset>';
+		}
 		
 		self::$_string .= $formr::close();
 		

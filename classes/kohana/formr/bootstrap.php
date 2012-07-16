@@ -23,8 +23,6 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$options = array_merge($defaults, $array);
 
 		$output = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
-		$output .= '<fieldset>';
-		$output .= '<legend>'.$options['legend'].'</legend>';
 
 		return $output;
 	}
@@ -38,8 +36,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function close()
 	{
-		$output = '</fieldset>';
-		$output .= '</form>';
+		$output = '</form>';
 
 		return $output;
 	}
@@ -71,7 +68,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function hidden($column)
 	{
+		//$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
 		$output = Form::hidden($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')));
+		//$output .= '</div>';
 
 		return $output;
 	}
@@ -305,7 +304,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= Form::password($column['column_name'], null,
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
-				'maxlength' => $column['character_maximum_length'],
+				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 255,
 			), $disabled));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
@@ -357,7 +356,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
 		$output  = '<div class="control-group">';
-        $output .= '<label class="control-label" for="'.$column['column_name'].'">'.ucwords($column['column_name']).'</label>';
+        $output .= self::label($column);
         $output .= '<div class="controls">';
 		$output .= '<label class="checkbox">';
 
@@ -486,7 +485,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			{
 				foreach(ORM::factory($relation['model'])->find_all() as $option)
 				{
-					$options[ (string) $option->{$model->primary_key()}] = $option->name;
+					$options[ (string) $option->{$model->primary_key()}] = isset($option->name) ? $option->name : $option->{$model->primary_key()};
 				}
 				unset($option);
 			}
@@ -562,9 +561,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = $relation['foreign_key'];
 
-			$string .= '<div class="control-group">';
-	        $string .= self::label(array('column_name' => $relation['relation_name']));
-	        $string .= '<div class="controls">';
+			$output .= '<div class="control-group">';
+	        $output .= self::label(array('column_name' => $relation['relation_name']));
+	        $output .= '<div class="controls">';
 
 	        foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
@@ -601,9 +600,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = (isset($relation['foreign_key'])) ? $plural.'[]' : $relation['foreign_key'];
 
-			$string .= '<div class="control-group">';
-			$string .= self::label(array('column_name' => $relation['relation_name']));
-			$string .= '<div class="controls">';
+			$output .= '<div class="control-group">';
+			$output .= self::label(array('column_name' => $relation['relation_name']));
+			$output .= '<div class="controls">';
 
 			foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
