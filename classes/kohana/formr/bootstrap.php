@@ -169,6 +169,14 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	}
 	
 	
+	/**
+	 * datetime function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @return void
+	 */
 	protected static function datetime($column)
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
@@ -185,6 +193,40 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'datetime',
 				'class' => 'datetime '.self::$_options['classes'][$column['column_name']],
+			), $disabled));
+
+		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
+
+		$output .= '</div>';
+		$output .= '</div>';
+
+		return $output;
+	}
+	
+	/**
+	 * datetime function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @return void
+	 */
+	protected static function time($column)
+	{
+		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+
+		$value = (self::$_object->{$column['column_name']}
+		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
+		: (isset($column['default']) ? $column['default'] : ''));
+
+		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column);
+		$output .= '<div class="controls">';
+
+		$output .= Form::input($column['column_name'], $value,
+			Arr::merge(array(
+				'type' => 'time',
+				'class' => 'time '.self::$_options['classes'][$column['column_name']],
 			), $disabled));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
@@ -470,12 +512,28 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			}
 
 			$model = ORM::factory($relation['model']);
+			
+			$query = ORM::factory($relation['model']);
+			
+			if (isset(self::$_options['filters'][$relation['relation_name']]))
+			{
+				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				{
+					$query->and_where(
+						$filter[0],
+						$filter[1],
+						$filter[2]
+					);
+				}
+			}
+			
+			$items = $query->find_all();
 
 			if (isset(self::$_options['group_by'][$relation['relation_name']]))
 			{
 				$group = preg_replace("/&#?[a-z0-9]{2,8};/i","",self::$_options['group_by'][$relation['relation_name']]);
 
-				foreach(ORM::factory($relation['model'])->find_all() as $option)
+				foreach($items as $option)
 				{
 					$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->name);
 				}
@@ -483,7 +541,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			}
 			else
 			{
-				foreach(ORM::factory($relation['model'])->find_all() as $option)
+				foreach($items as $option)
 				{
 					$options[ (string) $option->{$model->primary_key()}] = isset($option->name) ? $option->name : $option->{$model->primary_key()};
 				}
@@ -560,12 +618,28 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			$plural = $model->object_plural();
 
 			$name = $relation['foreign_key'];
+			
+			$query = ORM::factory($relation['model']);
+			
+			if (isset(self::$_options['filters'][$relation['relation_name']]))
+			{
+				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				{
+					$query->and_where(
+						$filter[0],
+						$filter[1],
+						$filter[2]
+					);
+				}
+			}
+			
+			$items = $query->find_all();
 
 			$output .= '<div class="control-group">';
 	        $output .= self::label(array('column_name' => $relation['relation_name']));
 	        $output .= '<div class="controls">';
 
-	        foreach(ORM::factory($relation['model'])->find_all() as $option)
+	        foreach($items as $option)
 			{
 		        $output .= '<label class="radio">';
 		        $output .= '<input type="radio" name="'.$plural.'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
@@ -600,11 +674,27 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = (isset($relation['foreign_key'])) ? $plural.'[]' : $relation['foreign_key'];
 
+			$query = ORM::factory($relation['model']);
+			
+			if (isset(self::$_options['filters'][$relation['relation_name']]))
+			{
+				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				{
+					$query->and_where(
+						$filter[0],
+						$filter[1],
+						$filter[2]
+					);
+				}
+			}
+			
+			$items = $query->find_all();
+
 			$output .= '<div class="control-group">';
 			$output .= self::label(array('column_name' => $relation['relation_name']));
 			$output .= '<div class="controls">';
 
-			foreach(ORM::factory($relation['model'])->find_all() as $option)
+			foreach($items as $option)
 			{
 				$output .= '<label class="checkbox inline">';
 				$output .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked="checked"' : false).'> ';

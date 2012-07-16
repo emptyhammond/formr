@@ -17,6 +17,8 @@ class Kohana_Formr
 	
 	protected static $_output = array();
 	
+	protected static $_hidden = array();
+	
 	protected static $_object;
 	
 	protected static $_column_names = array();
@@ -32,12 +34,13 @@ class Kohana_Formr
 		'help' => array(),
 		'disabled' => array(),
 		'group_by' => array(),
-		'fieldsets' => array(),
+		'fieldsets' => false,
 		'additional' => array(),
 		'legend' => '',
 		'sources' => array(),
 		'order' => false,
 		'values' => array(),
+		'filters' => array(),
 	);
 	
 	private function __construct($config)
@@ -138,6 +141,11 @@ class Kohana_Formr
 		{
 			self::$_options['values'] = array_merge(self::$_options['values'], $options['values']);
 		}
+		
+		if (isset($options['filters']))
+		{
+			self::$_options['filters'] = array_merge(self::$_options['filters'], $options['filters']);
+		}
 	}
 	
 	public static function create($model, array $options = array())
@@ -207,8 +215,8 @@ class Kohana_Formr
 					switch ($column['data_type'])
 					{
 						case 'hidden':
-						case $column['column_name'] === self::$_object->primary_key(): 
-							self::$_output[$column['column_name']] = $formr::hidden($column);
+						case $column['column_name'] === self::$_object->primary_key():
+							self::$_hidden[$column['column_name']] = $formr::hidden($column);
 							break;
 						case 'int':
 						case 'int unsigned':
@@ -331,24 +339,28 @@ class Kohana_Formr
 		
 		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype']));
 		
-		if (!(sizeof(self::$_options['fieldsets'] > 0)))
-		{
-			self::$_string .= '<fieldset>';
-			self::$_string .= '<legend>'.(isset(self::$_options['legend']) ? self::$_options['legend'] : $model).'</legend>';
-			self::$_string .= implode("\n", self::$_output);
-		}
-		else
+		self::$_string .= implode("\n", self::$_hidden);
+		
+		if (is_array(self::$_options['fieldsets']))
 		{
 			foreach(self::$_options['fieldsets'] as $fieldset => $inputs)
 			{
 				self::$_string .= '<fieldset>';
 				self::$_string .= '<legend>'.$fieldset.'</legend>';
+				
 				foreach($inputs as $input)
 				{
 					self::$_string .= self::$_output[$input];	
 				}
+				
 				self::$_string .= '</fieldset>';
 			}
+		}
+		else
+		{
+			self::$_string .= '<fieldset>';
+			self::$_string .= '<legend>'.(isset(self::$_options['legend']) ? self::$_options['legend'] : $model).'</legend>';
+			self::$_string .= implode("\n", self::$_output);
 		}
 				
 		self::$_string .= $formr::actions();
