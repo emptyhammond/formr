@@ -562,9 +562,15 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = $relation['foreign_key'];
 
+<<<<<<< HEAD
 			$output .= '<div class="control-group">';
 	        $output .= '<label class="control-label">'.ucwords($plural).'</label>';
 	        $output .= '<div class="controls">';
+=======
+			$string .= '<div class="control-group">';
+	        $string .= self::label(array('column_name' => $relation['relation_name']));
+	        $string .= '<div class="controls">';
+>>>>>>> bootstrap
 
 	        foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
@@ -601,9 +607,15 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			$name = (isset($relation['foreign_key'])) ? $plural.'[]' : $relation['foreign_key'];
 
+<<<<<<< HEAD
 			$output .= '<div class="control-group">';
 			$output .= '<label class="control-label" for="'.$plural.'">'.ucwords($plural).'</label>';
 			$output .= '<div class="controls">';
+=======
+			$string .= '<div class="control-group">';
+			$string .= self::label(array('column_name' => $relation['relation_name']));
+			$string .= '<div class="controls">';
+>>>>>>> bootstrap
 
 			foreach(ORM::factory($relation['model'])->find_all() as $option)
 			{
