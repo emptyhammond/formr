@@ -565,7 +565,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 					}
 					else
 					{
-						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{$model->primary_key()});
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
 					}
 					
 					$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
@@ -589,7 +589,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 					}
 					else
 					{
-						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{$model->primary_key()});
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
 					}
 					
 					$options[ (string) $option->{$model->primary_key()}] = $display_value;
@@ -707,9 +707,25 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 	        foreach($items as $option)
 			{
+				if(isset(self::$_options['display'][$relation['relation_name']]))
+				{
+					if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+					}
+					else
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+					}
+				}
+				else
+				{
+					$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
+				}
+				
 		        $output .= '<label class="radio">';
 		        $output .= '<input type="radio" name="'.$plural.'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
-				$output .= ucwords($option->name);
+				$output .= $display_value;
 		        $output .= '</label>';
 			}
 	        $output .= '</div>';
@@ -779,9 +795,25 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 			foreach($items as $option)
 			{
+				if(isset(self::$_options['display'][$relation['relation_name']]))
+				{
+					if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+					}
+					else
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+					}
+				}
+				else
+				{
+					$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
+				}
+
 				$output .= '<label class="checkbox inline">';
 				$output .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked="checked"' : false).'> ';
-				$output .= ucwords($option->name);
+				$output .= $display_value;
 				$output .= '</label>';
 			}
 
