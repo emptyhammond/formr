@@ -41,6 +41,7 @@ class Kohana_Formr
 		'order' => false,
 		'values' => array(),
 		'filters' => array(),
+		'display' => array(),
 	);
 	
 	private function __construct($config)
@@ -127,15 +128,7 @@ class Kohana_Formr
 			self::$_options['order'] = $options['order'];
 		}
 		
-		if (isset($options['fieldsets']))
-		{
-			self::$_options['fieldsets'] = array_merge(self::$_options['fieldsets'], $options['fieldsets']);
-		}
-		
-		if ($_POST)
-		{
-			self::$_object->values($_POST);
-		}
+		self::$_options['fieldsets'] = isset($options['fieldsets']) ? $options['fieldsets'] : false;
 		
 		if (isset($options['values']))
 		{
@@ -145,6 +138,16 @@ class Kohana_Formr
 		if (isset($options['filters']))
 		{
 			self::$_options['filters'] = array_merge(self::$_options['filters'], $options['filters']);
+		}
+		
+		if (isset($options['display']))
+		{
+			self::$_options['display'] = array_merge(self::$_options['display'], $options['display']);
+		}
+		
+		if ($_POST)
+		{
+			self::$_object->values($_POST);
 		}
 	}
 	
@@ -359,7 +362,7 @@ class Kohana_Formr
 		else
 		{
 			self::$_string .= '<fieldset>';
-			self::$_string .= '<legend>'.(isset(self::$_options['legend']) ? self::$_options['legend'] : $model).'</legend>';
+			self::$_string .= '<legend>'.self::$_options['legend'].'</legend>';
 			self::$_string .= implode("\n", self::$_output);
 		}
 				

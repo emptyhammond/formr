@@ -517,13 +517,30 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			
 			if (isset(self::$_options['filters'][$relation['relation_name']]))
 			{
-				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				foreach(self::$_options['filters'][$relation['relation_name']] as $clause => $filters)
 				{
-					$query->and_where(
-						$filter[0],
-						$filter[1],
-						$filter[2]
-					);
+					switch ($clause)
+					{
+						case 'and_where':
+							foreach($filters as $filter)
+							{
+								$query->and_where(
+									$filter[0],
+									$filter[1],
+									$filter[2]
+								);	
+							}
+							break;
+						case 'order_by':
+							foreach($filters as $filter)
+							{
+								$query->order_by(
+									$filter[0],
+									$filter[1]
+								);
+							}
+							break;
+					}
 				}
 			}
 			
@@ -535,15 +552,47 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 				foreach($items as $option)
 				{
-					$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->name);
+					if(isset(self::$_options['display'][$relation['relation_name']]))
+					{
+						if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+						}
+						else
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+						}
+					}
+					else
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{$model->primary_key()});
+					}
+					
+					$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
 				}
-				unset($option);
+				unset($option, $display_value);
 			}
 			else
 			{
 				foreach($items as $option)
 				{
-					$options[ (string) $option->{$model->primary_key()}] = isset($option->name) ? $option->name : $option->{$model->primary_key()};
+					if(isset(self::$_options['display'][$relation['relation_name']]))
+					{
+						if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+						}
+						else
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+						}
+					}
+					else
+					{
+						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{$model->primary_key()});
+					}
+					
+					$options[ (string) $option->{$model->primary_key()}] = $display_value;
 				}
 				unset($option);
 			}
@@ -623,13 +672,30 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			
 			if (isset(self::$_options['filters'][$relation['relation_name']]))
 			{
-				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				foreach(self::$_options['filters'][$relation['relation_name']] as $clause => $filters)
 				{
-					$query->and_where(
-						$filter[0],
-						$filter[1],
-						$filter[2]
-					);
+					switch ($clause)
+					{
+						case 'and_where':
+							foreach($filters as $filter)
+							{
+								$query->and_where(
+									$filter[0],
+									$filter[1],
+									$filter[2]
+								);	
+							}
+							break;
+						case 'order_by':
+							foreach($filters as $filter)
+							{
+								$query->order_by(
+									$filter[0],
+									$filter[1]
+								);
+							}
+							break;
+					}
 				}
 			}
 			
@@ -678,13 +744,30 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			
 			if (isset(self::$_options['filters'][$relation['relation_name']]))
 			{
-				foreach(self::$_options['filters'][$relation['relation_name']] as $filter)
+				foreach(self::$_options['filters'][$relation['relation_name']] as $clause => $filters)
 				{
-					$query->and_where(
-						$filter[0],
-						$filter[1],
-						$filter[2]
-					);
+					switch ($clause)
+					{
+						case 'and_where':
+							foreach($filters as $filter)
+							{
+								$query->and_where(
+									$filter[0],
+									$filter[1],
+									$filter[2]
+								);	
+							}
+							break;
+						case 'order_by':
+							foreach($filters as $filter)
+							{
+								$query->order_by(
+									$filter[0],
+									$filter[1]
+								);
+							}
+							break;
+					}
 				}
 			}
 			
