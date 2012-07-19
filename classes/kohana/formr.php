@@ -42,6 +42,7 @@ class Kohana_Formr
 		'values' => array(),
 		'filters' => array(),
 		'display' => array(),
+		'attributes' => array(),
 	);
 	
 	private function __construct($config)
@@ -143,6 +144,11 @@ class Kohana_Formr
 		if (isset($options['display']))
 		{
 			self::$_options['display'] = array_merge(self::$_options['display'], $options['display']);
+		}
+		
+		if (isset($options['attributes']))
+		{
+			self::$_options['attributes'] = array_merge(self::$_options['attributes'], $options['attributes']);
 		}
 		
 		if ($_POST)
@@ -257,7 +263,15 @@ class Kohana_Formr
 		{
 			$column = array('column_name' => $additional);
 			$func = self::$_options['types'][$additional];
-			self::$_output[$column['column_name']] = $formr::$func($column);
+			
+			if (self::$_options['types'][$additional] === 'hidden')
+			{
+				self::$_hidden[$additional] = $formr::$func($column);	
+			}
+			else
+			{
+				self::$_output[$additional] = $formr::$func($column);
+			}
 		}
 		
 		foreach(self::$_object->belongs_to() as $name => $model)

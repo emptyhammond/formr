@@ -68,9 +68,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function hidden($column)
 	{
-		//$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
-		$output = Form::hidden($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')));
-		//$output .= '</div>';
+		$output = Form::hidden($column['column_name'],(isset(self::$_object->{$column['column_name']}) ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')), (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array()));
 
 		return $output;
 	}
@@ -99,7 +97,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'max' => (isset($column['max']) ? $column['max'] : 99999999999999),
 				'step' => '0.01',
 				'class' => 'number '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -124,7 +122,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'max' => (isset($column['max']) ? $column['max'] : 99999999999999),
 				'step' => '1',
 				'class' => 'number '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -158,7 +156,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'date',
 				'class' => 'date '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -193,7 +191,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'datetime',
 				'class' => 'datetime '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -227,7 +225,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'time',
 				'class' => 'time '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -261,7 +259,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'type' => 'email',
 				'class' => 'email '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -288,7 +286,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'type' => 'color',
 				'class' => 'color '.self::$_options['classes'][$column['column_name']],
 				'style' => 'height: 20px; width: 20px;'
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -318,7 +316,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : '8000',
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 		$output .= '</div>';
@@ -347,7 +345,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 255,
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 		$output .= '</div>';
@@ -376,7 +374,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 		$output .= '</div>';
@@ -430,7 +428,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= Form::file($column['column_name'],
 			Arr::merge(array(
 				'class' => 'input-file '.self::$_options['classes'][$column['column_name']],
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 		$output .= '</div>';
 		$output .= '</div>';
@@ -460,7 +458,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		}
 		unset($option);
 
-		$attributes = $disabled;
+		$attributes = array_merge($disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array()));
 
 		if (self::$_object->{$column['column_name']} === NULL)
 		{
@@ -602,6 +600,8 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			$attributes['name'] = $name = ($multi) ? $model->object_plural().'[]' : $relation['foreign_key'];
 			
 			$attributes['class'] = isset(self::$_options['classes'][$relation['relation_name']]) ? self::$_options['classes'][$relation['relation_name']] : '';
+			
+			$attributes = array_merge($attributes, (isset(self::$_options['attributes'][$relation['relation_name']]) ? self::$_options['attributes'][$relation['relation_name']] : array()));
 
 			if ($_POST)
 			{
@@ -858,7 +858,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
 				'data-source' => $source,
-			), $disabled));
+			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 		$output .= '</div>';
