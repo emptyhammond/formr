@@ -364,7 +364,6 @@ class Kohana_Formr
 			{
 				self::$_string .= '<fieldset>';
 				self::$_string .= '<legend>'.$fieldset.'</legend>';
-				
 				foreach($inputs as $input)
 				{
 					self::$_string .= self::$_output[$input];	
