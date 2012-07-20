@@ -494,132 +494,146 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function select($relation, $multi = false)
 	{
-		$disabled = in_array($relation['model'], self::$_options['disabled']) ? array('disabled' => true) : array();
+		$disabled = in_array($relation['relation_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
+		
+		$attributes = ($multi) ? array('multiple' => 'multiple') : array();
+		
+		$attributes['class'] = isset(self::$_options['classes'][$relation['relation_name']]) ? self::$_options['classes'][$relation['relation_name']] : '';
+		
+		$attributes = array_merge($attributes, (isset(self::$_options['attributes'][$relation['relation_name']]) ? self::$_options['attributes'][$relation['relation_name']] : array()));
 
-		$output = '';
-
-		if( (bool) ORM::factory($relation['model'])->count_all())
+		if (isset(self::$_options['sources'][$relation['relation_name']])) // An array source is specified
 		{
-			if ($multi)
-			{
-				$options = array();
-			}
-			else
-			{
-				$options = array('0' => '-- '.$relation['model'].' --');
-			}
-
-			$model = ORM::factory($relation['model']);
+			$options = self::$_options['sources'][$relation['relation_name']];
 			
-			$query = ORM::factory($relation['model']);
-			
-			if (isset(self::$_options['filters'][$relation['relation_name']]))
-			{
-				foreach(self::$_options['filters'][$relation['relation_name']] as $clause => $filters)
-				{
-					switch ($clause)
-					{
-						case 'and_where':
-							foreach($filters as $filter)
-							{
-								$query->and_where(
-									$filter[0],
-									$filter[1],
-									$filter[2]
-								);	
-							}
-							break;
-						case 'order_by':
-							foreach($filters as $filter)
-							{
-								$query->order_by(
-									$filter[0],
-									$filter[1]
-								);
-							}
-							break;
-					}
-				}
-			}
-			
-			$items = $query->find_all();
-
-			if (isset(self::$_options['group_by'][$relation['relation_name']]))
-			{
-				$group = preg_replace("/&#?[a-z0-9]{2,8};/i","",self::$_options['group_by'][$relation['relation_name']]);
-
-				foreach($items as $option)
-				{
-					if(isset(self::$_options['display'][$relation['relation_name']]))
-					{
-						if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
-						{
-							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
-						}
-						else
-						{
-							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
-						}
-					}
-					else
-					{
-						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
-					}
-					
-					$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
-				}
-				unset($option, $display_value);
-			}
-			else
-			{
-				foreach($items as $option)
-				{
-					if(isset(self::$_options['display'][$relation['relation_name']]))
-					{
-						if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
-						{
-							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
-						}
-						else
-						{
-							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
-						}
-					}
-					else
-					{
-						$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
-					}
-					
-					$options[ (string) $option->{$model->primary_key()}] = $display_value;
-				}
-				unset($option);
-			}
-
-			$attributes = ($multi) ? array('multiple' => 'multiple') : array();
-
-			$attributes['name'] = $name = ($multi) ? $model->object_plural().'[]' : $relation['foreign_key'];
-			
-			$attributes['class'] = isset(self::$_options['classes'][$relation['relation_name']]) ? self::$_options['classes'][$relation['relation_name']] : '';
-			
-			$attributes = array_merge($attributes, (isset(self::$_options['attributes'][$relation['relation_name']]) ? self::$_options['attributes'][$relation['relation_name']] : array()));
-
-			if ($_POST)
+			$attributes['name'] = $name = $relation['relation_name'];
+		}
+		else //treat as ORM relation
+		{
+			if( (bool) ORM::factory($relation['model'])->count_all())
 			{
 				if ($multi)
 				{
-					$selected = isset($_POST[str_replace('[]','',$name)]) ? $_POST[str_replace('[]','',$name)] : array();
+					$options = array();
 				}
 				else
 				{
-					$selected = isset($_POST[$name]) ? $_POST[$name] : array();
+					$options = array('0' => '-- '.$relation['model'].' --');
 				}
+	
+				$model = ORM::factory($relation['model']);
+				
+				$query = ORM::factory($relation['model']);
+				
+				$attributes['name'] = $name = ($multi) ? $model->object_plural().'[]' : $relation['foreign_key'];
+				
+				if (isset(self::$_options['filters'][$relation['relation_name']]))
+				{
+					foreach(self::$_options['filters'][$relation['relation_name']] as $clause => $filters)
+					{
+						switch ($clause)
+						{
+							case 'and_where':
+								foreach($filters as $filter)
+								{
+									$query->and_where(
+										$filter[0],
+										$filter[1],
+										$filter[2]
+									);	
+								}
+								break;
+							case 'order_by':
+								foreach($filters as $filter)
+								{
+									$query->order_by(
+										$filter[0],
+										$filter[1]
+									);
+								}
+								break;
+						}
+					}
+				}
+				
+				$items = $query->find_all();
+	
+				if (isset(self::$_options['group_by'][$relation['relation_name']]))
+				{
+					$group = preg_replace("/&#?[a-z0-9]{2,8};/i","",self::$_options['group_by'][$relation['relation_name']]);
+	
+					foreach($items as $option)
+					{
+						if(isset(self::$_options['display'][$relation['relation_name']]))
+						{
+							if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+							{
+								$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+							}
+							else
+							{
+								$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+							}
+						}
+						else
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
+						}
+						
+						$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
+					}
+					unset($option, $display_value);
+				}
+				else
+				{
+					foreach($items as $option)
+					{
+						if(isset(self::$_options['display'][$relation['relation_name']]))
+						{
+							if (method_exists($option, self::$_options['display'][$relation['relation_name']]))
+							{
+								$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",call_user_func_array(array($option, self::$_options['display'][$relation['relation_name']]), array()));
+							}
+							else
+							{
+								$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",$option->{self::$_options['display'][$relation['relation_name']]});
+							}
+						}
+						else
+						{
+							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
+						}
+						
+						$options[ (string) $option->{$model->primary_key()}] = $display_value;
+					}
+					unset($option);
+				}
+			}	
+		}
+
+		if ($_POST)
+		{
+			if ($multi)
+			{
+				$selected = isset($_POST[str_replace('[]','',$name)]) ? $_POST[str_replace('[]','',$name)] : array();
+			}
+			else
+			{
+				$selected = isset($_POST[$name]) ? $_POST[$name] : array();
+			}
+		}
+		else
+		{
+			if (isset(self::$_options['values'][$relation['relation_name']]))
+			{			
+				$selected = self::$_options['values'][$relation['relation_name']];
 			}
 			else
 			{
 				if ($multi)
 				{
 					$selected = array();
-
+	
 					foreach(self::$_object->{$relation['relation_name']}->find_all() as $related)
 					{
 						array_push($selected, $related->pk());
@@ -628,21 +642,21 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				}
 				else
 				{
-					$selected = self::$_object->{$relation['relation_name']}->pk();
+					$selected = isset(self::$_object->{$relation['relation_name']}) ? self::$_object->{$relation['relation_name']}->pk() : 0;
 				}
 			}
-
-			$output .= '<div class="control-group'.(isset(self::$_options['errors'][$relation['model']]) ? ' error': '').'">';
-			$output .= self::label(array('column_name' => $relation['relation_name']));
-			$output .= '<div class="controls">';
-			$output .= Form::select($name, $options, $selected, $attributes);
-			$output .= (isset(self::$_options['help'][$relation['model']]) or isset(self::$_options['errors'][$relation['model']]))
-			? '<p class="help-block">'.(isset(self::$_options['errors'][$relation['model']]) ? self::$_options['errors'][$relation['model']]: self::$_options['help'][$relation['model']]).'</p>'
-			: '';
-			$output .= '</div>';
-			$output .= '</div>';
-
 		}
+
+		$output = '';
+		$output .= '<div class="control-group'.(isset(self::$_options['errors'][$relation['relation_name']]) ? ' error': '').'">';
+		$output .= self::label(array('column_name' => $relation['relation_name']));
+		$output .= '<div class="controls">';
+		$output .= Form::select($name, $options, $selected, $attributes);
+		$output .= (isset(self::$_options['help'][$relation['relation_name']]) or isset(self::$_options['errors'][$relation['relation_name']]))
+		? '<p class="help-block">'.(isset(self::$_options['errors'][$relation['relation_name']]) ? self::$_options['errors'][$relation['relation_name']]: self::$_options['help'][$relation['relation_name']]).'</p>'
+		: '';
+		$output .= '</div>';
+		$output .= '</div>';
 
 		return $output;
 	}

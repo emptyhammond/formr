@@ -261,7 +261,8 @@ class Kohana_Formr
 		
 		foreach(self::$_options['additional'] as $additional)
 		{
-			$column = array('column_name' => $additional);
+			$column = array('column_name' => $additional, 'relation_name' => $additional);
+			
 			$func = self::$_options['types'][$additional];
 			
 			if (self::$_options['types'][$additional] === 'hidden')
