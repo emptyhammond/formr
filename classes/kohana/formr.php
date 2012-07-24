@@ -3,8 +3,8 @@
 /**
  * Kohana_Formr class.
  *
- * Formr::create($model)->render($flavour);
- * Formr::edit($model, $id)->render($flavour);
+ * Formr::create($model,$options)->render($flavour);
+ * Formr::edit($model, $id, $options)->render($flavour);
  *
  */
 class Kohana_Formr
