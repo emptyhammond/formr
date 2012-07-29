@@ -738,7 +738,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				}
 				
 		        $output .= '<label class="radio">';
-		        $output .= '<input type="radio" name="'.$plural.'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
+		        $output .= '<input type="radio" name="'.$relation['relation_name'].'[]" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked' : false).'>';
 				$output .= $display_value;
 		        $output .= '</label>';
 			}
