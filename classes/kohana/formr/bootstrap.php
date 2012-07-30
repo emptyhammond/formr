@@ -501,26 +501,26 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$attributes['class'] = isset(self::$_options['classes'][$relation['relation_name']]) ? self::$_options['classes'][$relation['relation_name']] : '';
 		
 		$attributes = array_merge($attributes, (isset(self::$_options['attributes'][$relation['relation_name']]) ? self::$_options['attributes'][$relation['relation_name']] : array()));
+		
+		$attributes['name'] = $name = $relation['relation_name'];
 
 		if (isset(self::$_options['sources'][$relation['relation_name']])) // An array source is specified
 		{
 			$options = self::$_options['sources'][$relation['relation_name']];
-			
-			$attributes['name'] = $name = $relation['relation_name'];
 		}
 		else //treat as ORM relation
 		{
+			if (!$multi)
+			{
+				$options = array('0' => '-- '.$relation['model'].' --');
+			}
+			else
+			{
+				$options = array();				
+			}
+	
 			if( (bool) ORM::factory($relation['model'])->count_all())
 			{
-				if ($multi)
-				{
-					$options = array();
-				}
-				else
-				{
-					$options = array('0' => '-- '.$relation['model'].' --');
-				}
-	
 				$model = ORM::factory($relation['model']);
 				
 				$query = ORM::factory($relation['model']);
