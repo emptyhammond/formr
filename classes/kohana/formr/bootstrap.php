@@ -145,7 +145,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
 
 		$value = (self::$_object->{$column['column_name']}
-		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
+		? (is_numeric(self::$_object->{$column['column_name']}) ? date('Y-m-d',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
 		: (isset($column['default']) ? $column['default'] : ''));
 
 		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
@@ -154,6 +154,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
+				'autocomplete' => 'off',			
 				'type' => 'date',
 				'class' => 'date '.self::$_options['classes'][$column['column_name']],
 			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
@@ -178,20 +179,43 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	protected static function datetime($column)
 	{
 		$disabled = in_array($column['column_name'], self::$_options['disabled']) ? array('disabled' => true) : array();
-
+		
+		$hours = array(''=>'--');
+		
+		$minutes = array(''=>'--');
+		
+		for($i = 0;$i < 24;$i++)
+		{
+			$hours[ (string) sprintf("%02u", $i)] = sprintf("%02u", $i);
+		}
+		
+		for($i = 0;$i < 60;$i++)
+		{
+			$minutes[ (string) sprintf("%02u", $i)] = sprintf("%02u", $i);
+		}
+		
 		$value = (self::$_object->{$column['column_name']}
-		? (is_numeric(self::$_object->{$column['column_name']}) ? date('m/d/Y',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
+		? (is_numeric(self::$_object->{$column['column_name']}) ? date('Y-m-d',self::$_object->{$column['column_name']}) : self::$_object->{$column['column_name']})
 		: (isset($column['default']) ? $column['default'] : ''));
 
-		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output = '<div class="control-group form-inline '.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
+		
 		$output .= self::label($column);
+		
 		$output .= '<div class="controls">';
-
+		
 		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
-				'type' => 'datetime',
-				'class' => 'datetime '.self::$_options['classes'][$column['column_name']],
+				'autocomplete' => 'off',
+				'type' => 'date',
+				'class' => 'date '.self::$_options['classes'][$column['column_name']],
 			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
+		
+		$output .= ' '.Form::select('hour['.$column['column_name'].']', $hours, (self::$_object->{$column['column_name']} ? date('H',self::$_object->{$column['column_name']}) : '09'), array('type' => 'number', 'class' => 'input-mini hour-datetime'));
+		
+		$output .= ' '.self::label(array('column_name' => ':'), 'label-datetime').' ';
+		
+		$output .= Form::select('minute['.$column['column_name'].']', $minutes, (self::$_object->{$column['column_name']} ? date('i',self::$_object->{$column['column_name']}) : '09'), array('type' => 'number', 'class' => 'input-mini minute-datetime'));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
@@ -223,6 +247,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		$output .= Form::input($column['column_name'], $value,
 			Arr::merge(array(
+				'autocomplete' => 'off',			
 				'type' => 'time',
 				'class' => 'time '.self::$_options['classes'][$column['column_name']],
 			), $disabled, (isset(self::$_options['attributes'][$column['column_name']]) ? self::$_options['attributes'][$column['column_name']] : array())));
@@ -398,7 +423,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output  = '<div class="control-group">';
         $output .= self::label($column);
         $output .= '<div class="controls">';
-		$output .= '<label class="checkbox">';
+		$output .= '<label class="checkbox inline">';
 
 		$output .= '<input type="checkbox" name="'.$column['column_name'].'" id="'.$column['column_name'].'" value="1"'.( (boolean) self::$_object->{$column['column_name']} ? 'checked' : false).' class="'.self::$_options['classes'][$column['column_name']].(isset(self::$_options['disabled'][$column['column_name']]) ? ' disabled' : false).' "/>';
 
@@ -881,9 +906,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		return $output;
 	}
 
-	protected static function label($column)
+	protected static function label($column, $classes = 'control-label')
 	{
-		$output = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array('class' => 'control-label'));
+		$output = Form::label($column['column_name'], isset(self::$_options['labels'][$column['column_name']]) ? self::$_options['labels'][$column['column_name']] : ucwords($column['column_name']), array('class' => $classes));
 
 		return $output;
 	}
