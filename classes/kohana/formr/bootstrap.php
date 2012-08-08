@@ -215,7 +215,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		
 		$output .= ' '.self::label(array('column_name' => ':'), 'label-datetime').' ';
 		
-		$output .= Form::select('minute['.$column['column_name'].']', $minutes, (self::$_object->{$column['column_name']} ? date('i',self::$_object->{$column['column_name']}) : '09'), array('type' => 'number', 'class' => 'input-mini minute-datetime'));
+		$output .= Form::select('minute['.$column['column_name'].']', $minutes, (self::$_object->{$column['column_name']} ? date('i',self::$_object->{$column['column_name']}) : '00'), array('type' => 'number', 'class' => 'input-mini minute-datetime'));
 
 		$output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]).'</p>' : '';
 
