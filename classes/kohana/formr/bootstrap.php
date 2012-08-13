@@ -550,7 +550,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				
 				$query = ORM::factory($relation['model']);
 				
-				$attributes['name'] = $name = ($multi) ? $model->object_plural().'[]' : $relation['foreign_key'];
+				$attributes['name'] = $name = ($multi) ? $name.'[]' : $name;
 				
 				if (isset(self::$_options['filters'][$relation['relation_name']]))
 				{
@@ -635,7 +635,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				}
 			}	
 		}
-
+		
 		if ($_POST)
 		{
 			if ($multi)
