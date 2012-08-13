@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project name="Formr build" default="copy" basedir=".">
+	<target name="copy">
+		<echo message="Copying files to ${target}"/>
+		<copy todir="${target}">
+			<fileset dir="." excludes="build.xml"></fileset>
+		</copy>
+	</target>
+</project>
