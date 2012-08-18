@@ -336,8 +336,25 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output = '<div class="control-group'.(isset(self::$_options['errors'][$column['column_name']]) ? ' error': '').'">';
 		$output .= self::label($column);
 		$output .= '<div class="controls">';
-
-		$output .= Form::input($column['column_name'],(isset(self::$_object->{$column['column_name']}) ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		
+		if ((boolean) self::$_object->{$column['column_name']})
+		{
+			$value = self::$_object->{$column['column_name']};
+		}		
+		elseif (isset(self::$_options['values'][$column['column_name']]))
+		{
+			$value = self::$_options['values'][$column['column_name']];	
+		}
+		elseif (isset($column['default']))
+		{
+			$value = $column['default'];
+		}
+		else
+		{
+			$value = '';
+		}
+		
+		$output .= Form::input($column['column_name'],$value,
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : '8000',
@@ -395,7 +412,27 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= self::label($column);
 		$output .= '<div class="controls">';
 
-		$output .= Form::textarea($column['column_name'],(self::$_object->{$column['column_name']} ? self::$_object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		if ((boolean) self::$_object->{$column['column_name']})
+		{
+			$value = self::$_object->{$column['column_name']};
+			$value = '<p>401</p>';			
+		}		
+		elseif (isset(self::$_options['values'][$column['column_name']]))
+		{
+			$value = self::$_options['values'][$column['column_name']];
+			$value = '<p>406</p>';			
+		}
+		elseif (isset($column['default']))
+		{
+			$value = $column['default'];
+			$value = '<p>411</p>';
+		}
+		else
+		{
+			$value = '<p>415</p>';
+		}
+		
+		$output .= Form::textarea($column['column_name'], $value,
 			Arr::merge(array(
 				'class' => self::$_options['classes'][$column['column_name']],
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
