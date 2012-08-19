@@ -464,7 +464,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		$output .= '<input type="checkbox" name="'.$column['column_name'].'" id="'.$column['column_name'].'" value="1"'.( (boolean) self::$_object->{$column['column_name']} ? 'checked' : false).' class="'.self::$_options['classes'][$column['column_name']].(isset(self::$_options['disabled'][$column['column_name']]) ? ' disabled' : false).' "/>';
 
-        $output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? (isset(self::$_options['errors'][$column['column_name']]) ? self::$_options['errors'][$column['column_name']]: self::$_options['help'][$column['column_name']]) : '';
+        $output .= (isset(self::$_options['help'][$column['column_name']]) or isset(self::$_options['errors'][$column['column_name']])) ? (isset(self::$_options['errors'][$column['column_name']]) ? '<span class="help-inline">'.self::$_options['errors'][$column['column_name']].'</span>' : '<span class="help-inline">'.self::$_options['help'][$column['column_name']].'</span>') : '';
 		$output .= '</label>';
 		$output .= '</div>';
 		$output .= '</div>';
@@ -952,7 +952,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 	protected static function reset()
 	{
-		$output = Form::input('reset', 'Cancel', array('type' => 'reset', 'class' => 'btn')).' ';
+		$output = Form::input('reset', 'Reset', array('type' => 'reset', 'class' => 'btn')).' ';
 
 		return $output;
 	}
