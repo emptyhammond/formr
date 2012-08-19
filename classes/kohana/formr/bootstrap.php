@@ -415,21 +415,18 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		if ((boolean) self::$_object->{$column['column_name']})
 		{
 			$value = self::$_object->{$column['column_name']};
-			$value = '<p>401</p>';			
 		}		
 		elseif (isset(self::$_options['values'][$column['column_name']]))
 		{
 			$value = self::$_options['values'][$column['column_name']];
-			$value = '<p>406</p>';			
 		}
 		elseif (isset($column['default']))
 		{
 			$value = $column['default'];
-			$value = '<p>411</p>';
 		}
 		else
 		{
-			$value = '<p>415</p>';
+			$value = '';
 		}
 		
 		$output .= Form::textarea($column['column_name'], $value,
