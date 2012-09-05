@@ -885,7 +885,10 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				}
 
 				$output .= '<label class="checkbox inline">';
-				$output .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'" '.(self::$_object->has($plural, $option->pk()) ? 'checked="checked"' : false).'> ';
+				$output .= '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'"';
+				$output .= (!$_POST and self::$_object->has($plural, $option->pk())) ? ' checked="checked"' : '';
+				$output .= (isset($_POST[$plural]) and in_array($option->pk(),$_POST[$plural])) ? ' checked="checked"' : '';
+				$output .= ' />';
 				$output .= $display_value;
 				$output .= '</label>';
 			}
