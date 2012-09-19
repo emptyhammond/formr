@@ -24,6 +24,7 @@ class Kohana_Formr
 	protected static $_column_names = array();
 	
 	protected static $_options = array(
+		'actions' => false,
 		'enctype' => 'application/x-www-form-urlencoded', //application/x-www-form-urlencoded|multipart/form-data
 		'exclude' => array(),
 		'classes' => array(),
@@ -60,7 +61,10 @@ class Kohana_Formr
 		}
 		unset($class);
 		
-		//array_merge_recursive(self::$_options, $options);
+		if (isset($options['actions']))
+		{
+			self::$_options['actions'] = $options['actions'];
+		}
 		
 		if (isset($options['enctype']))
 		{

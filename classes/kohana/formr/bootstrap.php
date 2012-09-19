@@ -51,9 +51,23 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	protected static function actions()
 	{
 		$output = '<div class="form-actions">';
-		$output .= self::submit();
-		$output .= self::reset();
-		$output .= '</div>';
+		
+		if (self::$_options['actions'])
+		{
+			foreach(self::$_options['actions'] as $name => $parameters)
+			{
+				$parameters = array_merge(array('name' => 'name', 'value' => 'value', 'attributes' => array('class' => 'btn')), $parameters);
+
+				$output .= call_user_func(__NAMESPACE__ .'self::'.$parameters['type'], $name, $parameters['value'], $parameters['attributes']);
+			}
+		}
+		else
+		{
+			$output .= self::submit();
+			$output .= self::reset();
+		}
+	
+		$output .= '</div>';	
 
 		return $output;
 	}
@@ -950,16 +964,25 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		return $output;
 	}
 
-	protected static function reset()
+	protected static function reset($name = 'reset', $value = 'Reset', $attributes = array('class' => 'btn'))
 	{
-		$output = Form::input('reset', 'Reset', array('type' => 'reset', 'class' => 'btn')).' ';
+		$attributes = array_merge(array('type' => 'reset'),$attributes);
+		
+		$output = Form::input($name, $value, $attributes).' ';
 
 		return $output;
 	}
 
-	protected static function submit()
+	protected static function submit($name = 'save', $value = 'Save', $attributes = array('class' => 'btn btn-primary'))
 	{
-		$output = Form::submit('save','Save', array('class' => 'btn btn-primary')).' ';
+		$output = Form::submit($name, $value, $attributes).' ';
+
+		return $output;
+	}
+	
+	protected static function button($name = 'save', $value = 'Save', $attributes = array('class' => 'btn'))
+	{
+		$output = Form::button($name, $value, $attributes).' ';
 
 		return $output;
 	}
