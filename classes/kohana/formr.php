@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+error_reporting(E_ALL);
 /**
  * Kohana_Formr class.
  *
@@ -9,21 +9,21 @@
  */
 class Kohana_Formr
 {
-	protected static $_instance;
+	protected $_instance;
 	
-	protected static $_config;
+	protected $_config;
 	
-	protected static $_string;
+	protected $_string;
 	
-	protected static $_output = array();
+	protected $_output = array();
 	
-	protected static $_hidden = array();
+	protected $_hidden = array();
 	
-	protected static $_object;
+	protected $_object;
 	
-	protected static $_column_names = array();
+	protected $_column_names = array();
 	
-	protected static $_options = array(
+	protected $_options = array(
 		'actions' => false,
 		'enctype' => 'application/x-www-form-urlencoded', //application/x-www-form-urlencoded|multipart/form-data
 		'exclude' => array(),
@@ -46,16 +46,15 @@ class Kohana_Formr
 		'attributes' => array(),
 	);
 	
-	private function __construct($config)
+	private function __construct($model, $id = null, $options)
 	{	
-		self::$_config = $config;
-	}
-	
-	public static function setup($options)
-	{
-		self::$_options['classes'] = array_merge(array_flip(self::column_names()), array_flip(isset($options['additional']) ? $options['additional'] : array() )) ;
+		$this->_config = Kohana::$config->load('formr');
+		
+		$this->_object = ORM::factory($model, $id);
+			
+		$this->_options['classes'] = array_merge(array_flip($this->column_names()), array_flip(isset($options['additional']) ? $options['additional'] : array() )) ;
 
-		foreach(self::$_options['classes'] as &$class)
+		foreach($this->_options['classes'] as &$class)
 		{
 			$class = '';
 		}
@@ -63,134 +62,112 @@ class Kohana_Formr
 		
 		if (isset($options['actions']))
 		{
-			self::$_options['actions'] = $options['actions'];
+			$this->_options['actions'] = $options['actions'];
 		}
 		
 		if (isset($options['enctype']))
 		{
-			self::$_options['enctype'] = isset($options['enctype']) ? $options['enctype'] : self::$_options['enctype'];
+			$this->_options['enctype'] = isset($options['enctype']) ? $options['enctype'] : $this->_options['enctype'];
 		}
 		
 		if (isset($options['exclude']))
 		{
-			self::$_options['exclude'] = array_merge(self::$_options['exclude'], $options['exclude']);
+			$this->_options['exclude'] = array_merge($this->_options['exclude'], $options['exclude']);
 		}
 		
 		if (isset($options['classes']))
 		{
-			self::$_options['classes'] = array_merge(self::$_options['classes'], $options['classes']);
+			$this->_options['classes'] = array_merge($this->_options['classes'], $options['classes']);
 		}
 		
 		if (isset($options['labels']))
 		{
-			self::$_options['labels'] = array_merge(self::$_options['labels'], $options['labels']);
+			$this->_options['labels'] = array_merge($this->_options['labels'], $options['labels']);
 		}
 		
 		if (isset($options['placeholders']))
 		{
-			self::$_options['placeholders'] = array_merge(self::$_options['placeholders'], $options['placeholders']);
+			$this->_options['placeholders'] = array_merge($this->_options['placeholders'], $options['placeholders']);
 		}
 		
 		if (isset($options['types']))
 		{
-			self::$_options['types'] = array_merge(self::$_options['types'], $options['types']);
+			$this->_options['types'] = array_merge($this->_options['types'], $options['types']);
 		}
 		
 		if (isset($options['errors']))
 		{
-			self::$_options['errors'] = array_merge(self::$_options['errors'], $options['errors']);
+			$this->_options['errors'] = array_merge($this->_options['errors'], $options['errors']);
 		}
 		
 		if (isset($options['help']))
 		{
-			self::$_options['help'] = array_merge(self::$_options['help'], $options['help']);
+			$this->_options['help'] = array_merge($this->_options['help'], $options['help']);
 		}
 		
 		if (isset($options['disabled']))
 		{
-			self::$_options['disabled'] = array_merge(self::$_options['disabled'], $options['disabled']);
+			$this->_options['disabled'] = array_merge($this->_options['disabled'], $options['disabled']);
 		}
 		
 		if (isset($options['group_by']))
 		{
-			self::$_options['group_by'] = array_merge(self::$_options['group_by'], $options['group_by']);
+			$this->_options['group_by'] = array_merge($this->_options['group_by'], $options['group_by']);
 		}
 		
 		if (isset($options['additional']))
 		{
-			self::$_options['additional'] = array_merge(self::$_options['additional'], $options['additional']);
+			$this->_options['additional'] = array_merge($this->_options['additional'], $options['additional']);
 		}
 		
-		self::$_options['legend'] = isset($options['legend']) ? $options['legend'] : ucwords(self::$_object->object_name());
+		$this->_options['legend'] = isset($options['legend']) ? $options['legend'] : ucwords($this->_object->object_name());
 		
 		if (isset($options['sources']))
 		{
-			self::$_options['sources'] = array_merge(self::$_options['sources'], $options['sources']);
+			$this->_options['sources'] = array_merge($this->_options['sources'], $options['sources']);
 		}
 		
 		if (isset($options['order']))
 		{
-			self::$_options['order'] = $options['order'];
+			$this->_options['order'] = $options['order'];
 		}
 		
-		self::$_options['fieldsets'] = isset($options['fieldsets']) ? $options['fieldsets'] : false;
+		$this->_options['fieldsets'] = isset($options['fieldsets']) ? $options['fieldsets'] : false;
 		
 		if (isset($options['values']))
 		{
-			self::$_options['values'] = array_merge(self::$_options['values'], $options['values']);
+			$this->_options['values'] = array_merge($this->_options['values'], $options['values']);
 		}
 		
 		if (isset($options['filters']))
 		{
-			self::$_options['filters'] = array_merge(self::$_options['filters'], $options['filters']);
+			$this->_options['filters'] = array_merge($this->_options['filters'], $options['filters']);
 		}
 		
 		if (isset($options['display']))
 		{
-			self::$_options['display'] = array_merge(self::$_options['display'], $options['display']);
+			$this->_options['display'] = array_merge($this->_options['display'], $options['display']);
 		}
 		
 		if (isset($options['attributes']))
 		{
-			self::$_options['attributes'] = array_merge(self::$_options['attributes'], $options['attributes']);
+			$this->_options['attributes'] = array_merge($this->_options['attributes'], $options['attributes']);
 		}
 		
 		if ($_POST)
 		{
-			self::$_object->values($_POST);
+			$this->_object->values($_POST);
 		}
 	}
 	
 	public static function create($model, array $options = array())
 	{
-		if ( ! isset(Formr::$_instance))
-		{				
-			$config = Kohana::$config->load('formr');
-			
-			Formr::$_instance = new Kohana_Formr($config);
-			
-			self::$_object = ORM::factory($model);
-			
-			self::setup($options);
-		}
-		
-		return self::$_instance;
+		return new Kohana_Formr($model, null, $options);
 	}
 	
 	public static function edit($model, $id, array $options = array())
-	{
-		if ( ! isset(Formr::$_instance))
-		{				
-			$config = Kohana::$config->load('formr');
-			
-			Formr::$_instance = new Kohana_Formr($config);
-			
-			self::$_object = ORM::factory($model, $id);
-			
-			self::setup($options);
-		}
-		
-		return self::$_instance;
+	{	
+		return new Kohana_Formr($model, $id, $options);
 	}
 	
 	public function render($flavour = 'default')
@@ -203,33 +180,33 @@ class Kohana_Formr
 		
 		$has_one = array();
 		
-		foreach(self::$_object->belongs_to() as $model)
+		foreach($this->_object->belongs_to() as $model)
 		{
 			array_push($belongs_to, $model['foreign_key']);
 		}
 		
-		foreach(self::$_object->has_one() as $model)
+		foreach($this->_object->has_one() as $model)
 		{
 			array_push($has_one, $model['foreign_key']);
 		}
 		
-		foreach(self::$_object->list_columns() as $column)
+		foreach($this->_object->list_columns() as $column)
 		{
-			if ( ! in_array($column['column_name'], array_merge(self::$_options['exclude'], $has_one, $belongs_to)))
+			if ( ! in_array($column['column_name'], array_merge($this->_options['exclude'], $has_one, $belongs_to)))
 			{
-				if (isset(self::$_options['types'][$column['column_name']]))
+				if (isset($this->_options['types'][$column['column_name']]))
 				{
-					$type = self::$_options['types'][$column['column_name']];
+					$type = $this->_options['types'][$column['column_name']];
 					
-					self::$_output[$column['column_name']] = $formr::$type($column);
+					$this->_output[$column['column_name']] = $formr::$type($column, $this->_object, $this->_options);
 				}
 				else
 				{
 					switch ($column['data_type'])
 					{
 						case 'hidden':
-						case $column['column_name'] === self::$_object->primary_key():
-							self::$_hidden[$column['column_name']] = $formr::hidden($column);
+						case $column['column_name'] === $this->_object->primary_key():
+							$this->_hidden[$column['column_name']] = $formr::hidden($column, $this->_object, $this->_options);
 							break;
 						case 'int':
 						case 'int unsigned':
@@ -237,175 +214,175 @@ class Kohana_Formr
 						case 'tinyint':
 						case 'tinyint unsigned':
 						case 'tinyint signed':
-							self::$_output[$column['column_name']] = $formr::int($column);
+							$this->_output[$column['column_name']] = $formr::int($column, $this->_object, $this->_options);
 							break;
 						case 'float':
 						case 'double':
-							self::$_output[$column['column_name']] = $formr::number($column);
+							$this->_output[$column['column_name']] = $formr::number($column, $this->_object, $this->_options);
 							break;
 						case 'varchar':
-							self::$_output[$column['column_name']] = $formr::varchar($column);
+							$this->_output[$column['column_name']] = $formr::varchar($column, $this->_object, $this->_options);
 							break;
 						case 'date':
-							self::$_output[$column['column_name']] = $formr::date($column);
+							$this->_output[$column['column_name']] = $formr::date($column, $this->_object, $this->_options);
 							break;
 						case 'text':
-							self::$_output[$column['column_name']] = $formr::text($column);
+							$this->_output[$column['column_name']] = $formr::text($column, $this->_object, $this->_options);
 							break;
 						case 'enum':
-							self::$_output[$column['column_name']] = $formr::enum($column);
+							$this->_output[$column['column_name']] = $formr::enum($column, $this->_object, $this->_options);
 							break;
 						default:
-							self::$_output[$column['column_name']] = $formr::varchar($column);
+							$this->_output[$column['column_name']] = $formr::varchar($column, $this->_object, $this->_options);
 					}
 				}
 			}
 		}
 		unset($column);
 		
-		foreach(self::$_options['additional'] as $additional)
+		foreach($this->_options['additional'] as $additional)
 		{
 			$column = array('column_name' => $additional, 'relation_name' => $additional);
 			
-			$func = self::$_options['types'][$additional];
+			$func = $this->_options['types'][$additional];
 			
-			if (self::$_options['types'][$additional] === 'hidden')
+			if ($this->_options['types'][$additional] === 'hidden')
 			{
-				self::$_hidden[$additional] = $formr::$func($column);	
+				$this->_hidden[$additional] = $formr::$func($column);	
 			}
 			else
 			{
-				self::$_output[$additional] = $formr::$func($column);
+				$this->_output[$additional] = $formr::$func($column);
 			}
 		}
 		
-		foreach(self::$_object->belongs_to() as $name => $model)
+		foreach($this->_object->belongs_to() as $name => $model)
 		{
 			$model['relation_name'] = $name;
 			
-			if ( ! in_array($model['relation_name'], self::$_options['exclude']))
+			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset(self::$_options['types'][$model['foreign_key']]))
+				if (isset($this->_options['types'][$model['foreign_key']]))
 				{
-					$type = self::$_options['types'][$model['foreign_key']];
+					$type = $this->_options['types'][$model['foreign_key']];
 					
-					self::$_output[$model['relation_name']] = $formr::$type($model);
+					$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 				}
 				else
 				{
-					self::$_output[$model['relation_name']] = $formr::select($model, false);
+					$this->_output[$model['relation_name']] = $formr::select($model, false, $this->_object, $this->_options);
 				}
 			}
 		}
 		unset($model);
 		
-		foreach(self::$_object->has_one() as $name => $model)
+		foreach($this->_object->has_one() as $name => $model)
 		{
 			$model['relation_name'] = $name;
 			
-			if ( ! in_array($model['relation_name'], self::$_options['exclude']))
+			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset(self::$_options['types'][$model['foreign_key']]))
+				if (isset($this->_options['types'][$model['foreign_key']]))
 				{
-					$type = self::$_options['types'][$model['foreign_key']];
+					$type = $this->_options['types'][$model['foreign_key']];
 										
-					self::$_output[$model['relation_name']] = $formr::$type($model);
+					$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 				}
 				else
 				{
-					self::$_output[$model['relation_name']] = $formr::select($model, false);
+					$this->_output[$model['relation_name']] = $formr::select($model, false, $this->_object, $this->_options);
 				}
 			}
 		}
 		unset($model);
 		
-		foreach(self::$_object->has_many() as $name => $model)
+		foreach($this->_object->has_many() as $name => $model)
 		{
 			$model['relation_name'] = $name;
 			
-			if ( ! in_array($model['relation_name'], self::$_options['exclude']))
+			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset(self::$_options['types'][Inflector::plural($model['model'])]))
+				if (isset($this->_options['types'][Inflector::plural($model['model'])]))
 				{
-					$type = self::$_options['types'][Inflector::plural($model['model'])];
+					$type = $this->_options['types'][Inflector::plural($model['model'])];
 					
-					self::$_output[$model['relation_name']] = $formr::$type($model, true);
+					$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 				}
 				else
 				{
-					self::$_output[$model['relation_name']] = $formr::select($model, true);
+					$this->_output[$model['relation_name']] = $formr::select($model, true, $this->_object, $this->_options);
 				}
 			}
 		}
 		unset($model);
 		
-		if (self::$_options['order'])
+		if ($this->_options['order'])
 		{
-			$order = array_flip(self::$_options['order']);
+			$order = array_flip($this->_options['order']);
 			
 			foreach($order as $key => $val)
 			{
-				$order[$key] = isset(self::$_output[$key]) ? self::$_output[$key] : null;
-				unset(self::$_output[$key]);
+				$order[$key] = isset($this->_output[$key]) ? $this->_output[$key] : null;
+				unset($this->_output[$key]);
 			}
 			unset($key, $val);
 			
-			foreach(self::$_output as $key => $val)
+			foreach($this->_output as $key => $val)
 			{
-				$order[$key] = self::$_output[$key];
+				$order[$key] = $this->_output[$key];
 			}
 			unset($key, $val);
 			
-			self::$_output = $order;
+			$this->_output = $order;
 		}
 		
-		self::$_string = $formr::open(null, array('enctype' => self::$_options['enctype']));
+		$this->_string = $formr::open(null, array('enctype' => $this->_options['enctype']));
 		
-		self::$_string .= implode("\n", self::$_hidden);
+		$this->_string .= implode("\n", $this->_hidden);
 		
-		if (is_array(self::$_options['fieldsets']))
+		if (is_array($this->_options['fieldsets']))
 		{
-			foreach(self::$_options['fieldsets'] as $fieldset => $inputs)
+			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
-				self::$_string .= '<fieldset>';
-				self::$_string .= '<legend>'.$fieldset.'</legend>';
+				$this->_string .= '<fieldset>';
+				$this->_string .= '<legend>'.$fieldset.'</legend>';
 				foreach($inputs as $input)
 				{
-					self::$_string .= self::$_output[$input];	
+					$this->_string .= $this->_output[$input];	
 				}
 				
-				self::$_string .= '</fieldset>';
+				$this->_string .= '</fieldset>';
 			}
 		}
 		else
 		{
-			self::$_string .= '<fieldset>';
-			self::$_string .= '<legend>'.self::$_options['legend'].'</legend>';
-			self::$_string .= implode("\n", self::$_output);
+			$this->_string .= '<fieldset>';
+			$this->_string .= '<legend>'.$this->_options['legend'].'</legend>';
+			$this->_string .= implode("\n", $this->_output);
 		}
 				
-		self::$_string .= $formr::actions();
+		$this->_string .= $formr::actions($this->_options);
 		
-		if (!(sizeof(self::$_options['fieldsets'] > 0)))
+		if (!(sizeof($this->_options['fieldsets'] > 0)))
 		{
-			self::$_string .= '</fieldset>';
+			$this->_string .= '</fieldset>';
 		}
 		
-		self::$_string .= $formr::close();
+		$this->_string .= $formr::close();
 		
-		echo self::$_string;
+		return $this->_string;
 	}
 	
-	public static function column_names()
+	public function column_names()
 	{
-		if ( ! sizeof(self::$_column_names) > 0)
+		if ( ! sizeof($this->_column_names) > 0)
 		{		
-			foreach(self::$_object->list_columns() as $column)
+			foreach($this->_object->list_columns() as $column)
 			{
-				array_push(self::$_column_names, $column['column_name']);
+				array_push($this->_column_names, $column['column_name']);
 			}
 		}
 		
-		return self::$_column_names;
+		return $this->_column_names;
 	}
 }
