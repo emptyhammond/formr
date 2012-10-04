@@ -248,11 +248,11 @@ class Kohana_Formr
 			
 			if ($this->_options['types'][$additional] === 'hidden')
 			{
-				$this->_hidden[$additional] = $formr::$func($column);	
+				$this->_hidden[$additional] = $formr::$func($column, $this->_object, $this->_options);	
 			}
 			else
 			{
-				$this->_output[$additional] = $formr::$func($column);
+				$this->_output[$additional] = $formr::$func($column, $this->_object, $this->_options);
 			}
 		}
 		
@@ -346,9 +346,13 @@ class Kohana_Formr
 			{
 				$this->_string .= '<fieldset>';
 				$this->_string .= '<legend>'.$fieldset.'</legend>';
+
 				foreach($inputs as $input)
 				{
-					$this->_string .= $this->_output[$input];	
+					if (isset($this->_output[$input]))
+					{
+						$this->_string .= $this->_output[$input];	
+					}
 				}
 				
 				$this->_string .= '</fieldset>';
