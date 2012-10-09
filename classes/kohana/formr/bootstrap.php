@@ -80,7 +80,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 * @param mixed $column
 	 * @return void
 	 */
-	protected function hidden($column, $object, $options)
+	protected static function hidden($column, $object, $options)
 	{
 		$output = Form::hidden($column['column_name'],(isset($object->{$column['column_name']}) ? $object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')), (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array()));
 
