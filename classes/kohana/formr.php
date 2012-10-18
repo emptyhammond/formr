@@ -252,7 +252,14 @@ class Kohana_Formr
 			}
 			else
 			{
-				$this->_output[$additional] = $formr::$func($column, $this->_object, $this->_options);
+				if ($func === 'select')
+				{
+					$this->_output[$additional] = $formr::$func($column, false, $this->_object, $this->_options);					
+				}
+				else
+				{
+					$this->_output[$additional] = $formr::$func($column, $this->_object, $this->_options);					
+				}
 			}
 		}
 		
