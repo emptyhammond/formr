@@ -82,7 +82,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function hidden($column, $object, $options)
 	{
-		$output = Form::hidden($column['column_name'],(isset($object->{$column['column_name']}) ? $object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')), (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array()));
+		$output = Form::hidden($column['column_name'],(isset($object->{$column['column_name']}) ? $object->{$column['column_name']} : (isset($options['values'][$column['column_name']]) ? $options['values'][$column['column_name']] : (isset($column['default']) ? $column['default'] : ''))), (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array()));
 
 		return $output;
 	}
@@ -566,7 +566,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 * @todo add disabled
 	 */
 	protected static function select($relation, $multi = false, $object, $options)
-	{								
+	{
 		$disabled = in_array($relation['relation_name'], $options['disabled']) ? array('disabled' => true) : array();
 		
 		$attributes = ($multi) ? array('multiple' => 'multiple') : array();
@@ -585,11 +585,11 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		{
 			if (!$multi)
 			{
-				$options = array('0' => '-- '.$relation['model'].' --');
+				$opts = array('0' => '-- '.$relation['model'].' --');
 			}
 			else
 			{
-				$options = array();				
+				$opts = array();				
 			}
 	
 			if( (bool) ORM::factory($relation['model'])->count_all())
@@ -607,6 +607,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 						switch ($clause)
 						{
 							case 'and_where':
+								
 								foreach($filters as $filter)
 								{
 									$query->and_where(
@@ -616,7 +617,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 									);	
 								}
 								break;
+								
 							case 'order_by':
+								
 								foreach($filters as $filter)
 								{
 									$query->order_by(
@@ -653,7 +656,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
 						}
 						
-						$options[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
+						$opts[$option->{$group}->name][ (string) $option->{$model->primary_key()}] = $display_value;
 					}
 					unset($option, $display_value);
 				}
@@ -677,7 +680,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 							$display_value = preg_replace("/&#?[a-z0-9]{2,8};/i","",(isset($option->name) ? $option->name : $option->{$model->primary_key()}));
 						}
 						
-						$options[ (string) $option->{$model->primary_key()}] = $display_value;
+						$opts[ (string) $option->{$model->primary_key()}] = $display_value;
 					}
 					unset($option);
 				}
@@ -724,7 +727,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= '<div class="control-group'.(isset($options['errors'][$relation['relation_name']]) ? ' error': '').'">';
 		$output .= self::label(array('column_name' => $relation['relation_name']), $options);
 		$output .= '<div class="controls">';
-		$output .= Form::select($name, $options, $selected, $attributes);
+		$output .= Form::select($name, $opts, $selected, $attributes);
 		$output .= (isset($options['help'][$relation['relation_name']]) or isset($options['errors'][$relation['relation_name']]))
 		? '<p class="help-block">'.(isset($options['errors'][$relation['relation_name']]) ? $options['errors'][$relation['relation_name']]: $options['help'][$relation['relation_name']]).'</p>'
 		: '';
