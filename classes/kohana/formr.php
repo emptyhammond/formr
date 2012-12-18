@@ -306,14 +306,27 @@ class Kohana_Formr
 		foreach($this->_object->has_many() as $name => $model)
 		{
 			$model['relation_name'] = $name;
-			
+			$model['column_name'] = $name;			
+
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
 				if (isset($this->_options['types'][Inflector::plural($model['model'])]))
 				{
-					$type = $this->_options['types'][Inflector::plural($model['model'])];
-					
-					$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
+					if ($this->_options['types'][Inflector::plural($model['model'])] === 'hidden')
+					{
+						foreach($this->_object->{$name}->find_all() as $i => $relation)
+						{
+							$this->_options['values'][$model['relation_name'].'['.$i.']'] = $relation->id;
+							
+							$this->_output[$model['relation_name'].'['.$i.']'] = $formr::hidden(array('column_name' => $model['relation_name'].'['.$i.']'), $relation, $this->_options);
+						}
+					}
+					else
+					{
+						$type = $this->_options['types'][Inflector::plural($model['model'])];
+						
+						$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
+					}
 				}
 				else
 				{
