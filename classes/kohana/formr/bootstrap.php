@@ -579,7 +579,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		if (isset($options['sources'][$relation['relation_name']])) // An array source is specified
 		{
-			$options = $options['sources'][$relation['relation_name']];
+			$opts = $options['sources'][$relation['relation_name']];
 		}
 		else //treat as ORM relation
 		{
