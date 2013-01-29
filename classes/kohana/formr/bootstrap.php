@@ -351,7 +351,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= self::label($column, $options);
 		$output .= '<div class="controls">';
 		
-		if ((boolean) $object->{$column['column_name']})
+		if ((boolean) isset($object->{$column['column_name']}) and $object->{$column['column_name']})
 		{
 			$value = $object->{$column['column_name']};
 		}		
@@ -948,7 +948,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= Form::input($column['column_name'],(isset($object->{$column['column_name']}) ? $object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
 			Arr::merge(array(
 				'data-provide' => 'typeahead',
-				'class' => $options['classes'][$column['column_name']],
+				'class' => isset($options['classes'][$column['column_name']]) ? $options['classes'][$column['column_name']] : '',
 				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
 				'data-source' => $source,
 			), $disabled, (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array())));
@@ -959,7 +959,67 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		return $output;
 	}
+	
+	/**
+	 * searchcomplete function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @param mixed $object
+	 * @param mixed $options
+	 * @return void
+	 *
+	 * Requires the following JS to work
+		 
+	 */
+	protected static function searchcomplete($column, $object, $options)
+	{
+		if (isset($options['sources'][$column['column_name']]))
+		{
+			if (is_string($options['sources'][$column['column_name']]) and Valid::url($options['sources'][$column['column_name']]))
+			{
+				$source = (string) file_get_contents($options['sources'][$column['column_name']]);
+			}
+			else //should be stringyfied json
+			{
+				$source = (string) $options['sources'][$column['column_name']];
+			}
+		}
+		
+		$id = (isset($object->{$column['column_name']}) and $object->{$column['column_name']}->loaded()) ? $object->{$column['column_name']} : (isset($options['values'][$column['relation_name']]) ? $options['values'][$column['relation_name']] : (isset($column['default']) ? $column['default'] : ''));
+		
+		$object = ORM::factory($column['model'], $id);
+		
+		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
+		$output = '<div class="control-group'.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
+		$output .= self::label($column, $options);
+		$output .= '<div class="controls">';
+		$output .= Form::hidden($column['column_name'],$object->id);
+		$output .= Form::input($column['column_name'].'-selector',$object->name,
+			Arr::merge(array(
+				'class' => isset($options['classes'][$column['column_name']]) ? $options['classes'][$column['column_name']] : '',
+				'maxlength' => isset($column['character_maximum_length']) ? $column['character_maximum_length'] : 8000,
+				'data-source' => $source,
+			), $disabled, (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array()),array('class' => 'searchcomplete')));
+
+		$output .= (isset($options['help'][$column['column_name']]) or isset($options['errors'][$column['column_name']])) ? '<p class="help-block">'.(isset($options['errors'][$column['column_name']]) ? $options['errors'][$column['column_name']]: $options['help'][$column['column_name']]).'</p>' : '';
+		$output .= '</div>';
+		$output .= '</div>';
+
+		return $output;
+	}
+
+	/**
+	 * label function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @param mixed $options
+	 * @return void
+	 */
 	protected static function label($column, $options)
 	{
 		$options['classes'] = null;
@@ -969,6 +1029,16 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		return $output;
 	}
 
+	/**
+	 * reset function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param string $name (default: 'reset')
+	 * @param string $value (default: 'Reset')
+	 * @param string $attributes (default: array('class' => 'btn'))
+	 * @return void
+	 */
 	protected static function reset($name = 'reset', $value = 'Reset', $attributes = array('class' => 'btn'))
 	{
 		$attributes = array_merge(array('type' => 'reset'),$attributes);
@@ -978,6 +1048,16 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		return $output;
 	}
 
+	/**
+	 * submit function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param string $name (default: 'save')
+	 * @param string $value (default: 'Save')
+	 * @param string $attributes (default: array('class' => 'btn btn-primary'))
+	 * @return void
+	 */
 	protected static function submit($name = 'save', $value = 'Save', $attributes = array('class' => 'btn btn-primary'))
 	{
 		$output = Form::submit($name, $value, $attributes).' ';
@@ -985,6 +1065,16 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		return $output;
 	}
 	
+	/**
+	 * button function.
+	 * 
+	 * @access protected
+	 * @static
+	 * @param string $name (default: 'save')
+	 * @param string $value (default: 'Save')
+	 * @param string $attributes (default: array('class' => 'btn'))
+	 * @return void
+	 */
 	protected static function button($name = 'save', $value = 'Save', $attributes = array('class' => 'btn'))
 	{
 		$output = Form::button($name, $value, $attributes).' ';

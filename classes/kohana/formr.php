@@ -266,12 +266,13 @@ class Kohana_Formr
 		foreach($this->_object->belongs_to() as $name => $model)
 		{
 			$model['relation_name'] = $name;
-			
+			$model['column_name'] = $name;
+
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset($this->_options['types'][$model['foreign_key']]))
+				if (isset($this->_options['types'][$model['foreign_key']]) or isset($this->_options['types'][$name]))
 				{
-					$type = $this->_options['types'][$model['foreign_key']];
+					$type = isset($this->_options['types'][$model['foreign_key']]) ? $this->_options['types'][$model['foreign_key']] : $this->_options['types'][$name];
 					
 					$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 				}
@@ -286,7 +287,8 @@ class Kohana_Formr
 		foreach($this->_object->has_one() as $name => $model)
 		{
 			$model['relation_name'] = $name;
-			
+			$model['column_name'] = $name;
+						
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
 				if (isset($this->_options['types'][$model['foreign_key']]))
