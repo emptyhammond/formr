@@ -158,9 +158,22 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
-		$value = ($object->{$column['column_name']}
-		? (is_numeric($object->{$column['column_name']}) ? date('Y-m-d',$object->{$column['column_name']}) : $object->{$column['column_name']})
-		: (isset($column['default']) ? $column['default'] : ''));
+		if ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
+		{
+			$value = date('d-m-Y',$object->{$column['column_name']});
+		}
+		elseif (isset($options['values'][$column['column_name']]))
+		{
+			$value = date('d-m-Y',$options['values'][$column['column_name']]);
+		}
+		elseif(isset($column['default']))
+		{
+			$value = $column['default'];
+		}
+		else
+		{
+			$value = '';
+		}
 
 		$output = '<div class="control-group'.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
 		$output .= self::label($column, $options);
@@ -208,10 +221,23 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			$minutes[ (string) sprintf("%02u", $i)] = sprintf("%02u", $i);
 		}
 		
-		$value = ($object->{$column['column_name']}
-		? (is_numeric($object->{$column['column_name']}) ? date('Y-m-d',$object->{$column['column_name']}) : $object->{$column['column_name']})
-		: (isset($column['default']) ? $column['default'] : ''));
-
+		if ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
+		{
+			$value = date('d-m-Y',$object->{$column['column_name']});
+		}
+		elseif (isset($options['values'][$column['column_name']]))
+		{
+			$value = date('d-m-Y',$options['values'][$column['column_name']]);
+		}
+		elseif(isset($column['default']))
+		{
+			$value = $column['default'];
+		}
+		else
+		{
+			$value = '';
+		}
+		
 		$output = '<div class="control-group form-inline '.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
 		
 		$output .= self::label($column, $options);
