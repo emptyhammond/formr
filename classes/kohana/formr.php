@@ -44,6 +44,8 @@ class Kohana_Formr
 		'filters' => array(),
 		'display' => array(),
 		'attributes' => array(),
+		'tabs' => false,
+		'html' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -154,6 +156,16 @@ class Kohana_Formr
 			$this->_options['attributes'] = array_merge($this->_options['attributes'], $options['attributes']);
 		}
 		
+		if (isset($options['tabs']))
+		{
+			$this->_options['tabs'] = $options['tabs'];
+		}
+		
+		if (isset($options['html']))
+		{
+			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
+		}
+		
 		if ($_POST)
 		{
 			$this->_object->values($_POST);
@@ -252,7 +264,11 @@ class Kohana_Formr
 			}
 			else
 			{
-				if ($func === 'select')
+				if ($func === 'html')
+				{
+					$this->_output[$additional] = $this->_options['html'][$additional];
+				}
+				elseif ($func === 'select')
 				{
 					$this->_output[$additional] = $formr::$func($column, false, $this->_object, $this->_options);					
 				}
@@ -362,7 +378,42 @@ class Kohana_Formr
 		
 		$this->_string .= implode("\n", $this->_hidden);
 		
-		if (is_array($this->_options['fieldsets']))
+		if ($this->_options['tabs'] and is_array($this->_options['fieldsets']))
+		{
+			$list = '';
+			$content = '';
+			$active = true;
+			
+			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
+			{
+				$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.$fieldset.'">'.$fieldset.'</a></li>';
+				$content .= '<div id="'.$fieldset.'" class="tab-pane '.($active ? 'active' : '').'">';
+				$content .= '<fieldset>';
+
+				foreach($inputs as $input)
+				{
+					if (isset($this->_output[$input]))
+					{
+						$content .= $this->_output[$input];	
+					}
+				}
+				
+				$content .= '</fieldset>';
+				$content .= '</div>';
+				
+				$active = false;
+			}
+			
+			$this->_string .= '<div class="tabbable">';
+			$this->_string .= '<ul class="nav nav-tabs">';
+			$this->_string .= $list;
+			$this->_string .= '</ul>';
+			$this->_string .= '<div class="tab-content">';
+			$this->_string .= $content;			
+			$this->_string .= '</div>';
+			$this->_string .= '</div>';
+		}
+		elseif (is_array($this->_options['fieldsets']))
 		{
 			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
