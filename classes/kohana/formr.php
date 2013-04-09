@@ -386,8 +386,8 @@ class Kohana_Formr
 			
 			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
-				$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.$fieldset.'">'.$fieldset.'</a></li>';
-				$content .= '<div id="'.$fieldset.'" class="tab-pane '.($active ? 'active' : '').'">';
+				$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
+				$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
 				$content .= '<fieldset>';
 
 				foreach($inputs as $input)
