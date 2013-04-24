@@ -474,9 +474,8 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output .= '<label class="checkbox inline">';
 
 		$output .= '<input type="checkbox" name="'.$column['column_name'].'" id="'.$column['column_name'].'" value="1"'.( (boolean) $object->{$column['column_name']} ? 'checked' : false).' class="'.$options['classes'][$column['column_name']].(isset($options['disabled'][$column['column_name']]) ? ' disabled' : false).' "/>';
-
-        $output .= (isset($options['help'][$column['column_name']]) or isset($options['errors'][$column['column_name']])) ? (isset($options['errors'][$column['column_name']]) ? '<span class="help-inline">'.$options['errors'][$column['column_name']].'</span>' : '<span class="help-inline">'.$options['help'][$column['column_name']].'</span>') : '';
 		$output .= '</label>';
+		$output .= (isset($options['help'][$column['column_name']]) or isset($options['errors'][$column['column_name']])) ? (isset($options['errors'][$column['column_name']]) ? '<p class="help-block">'.$options['errors'][$column['column_name']].'</p>' : '<p class="help-block">'.$options['help'][$column['column_name']].'</p>') : '';
 		$output .= '</div>';
 		$output .= '</div>';
 
