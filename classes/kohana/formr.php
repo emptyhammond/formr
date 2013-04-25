@@ -430,19 +430,20 @@ class Kohana_Formr
 				}
 				
 				$this->_string .= '</fieldset>';
-				$this->_string .= $formr::actions($this->_options);
 			}
+			
+			$this->_string .= $formr::actions($this->_options);
 		}
 		else
 		{
 			$this->_string .= '<fieldset>';
 			$this->_string .= '<legend>'.$this->_options['legend'].'</legend>';
 			$this->_string .= implode("\n", $this->_output);
+			$this->_string .= $formr::actions($this->_options);
 		}
 		
 		if (!(sizeof($this->_options['fieldsets'] > 0)))
 		{
-			$this->_string .= $formr::actions($this->_options);
 			$this->_string .= '</fieldset>';
 		}
 		
