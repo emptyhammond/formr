@@ -409,8 +409,9 @@ class Kohana_Formr
 			$this->_string .= $list;
 			$this->_string .= '</ul>';
 			$this->_string .= '<div class="tab-content">';
-			$this->_string .= $content;			
-			$this->_string .= '</div>';
+			$this->_string .= $content;
+			$this->_string .= $formr::actions($this->_options);						
+			$this->_string .= '</div>';			
 			$this->_string .= '</div>';
 		}
 		elseif (is_array($this->_options['fieldsets']))
@@ -436,13 +437,13 @@ class Kohana_Formr
 			$this->_string .= '<fieldset>';
 			$this->_string .= '<legend>'.$this->_options['legend'].'</legend>';
 			$this->_string .= implode("\n", $this->_output);
+			$this->_string .= $formr::actions($this->_options);
 		}
-				
-		$this->_string .= $formr::actions($this->_options);
 		
 		if (!(sizeof($this->_options['fieldsets'] > 0)))
 		{
 			$this->_string .= '</fieldset>';
+			$this->_string .= $formr::actions($this->_options);			
 		}
 		
 		$this->_string .= $formr::close();
