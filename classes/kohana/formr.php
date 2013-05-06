@@ -396,6 +396,7 @@ class Kohana_Formr
 					{
 						$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$key)).'" class="tab-pane '.($active ? 'active' : '').'">';
 						$content .= '<fieldset>';
+						$content .= '<legend>'.$key.'</legend>';
 						$list .= '<li><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$key)).'">'.$key.'</a></li>';
 
 						foreach($drop as $input)
@@ -420,6 +421,7 @@ class Kohana_Formr
 					$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
 					$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
 					$content .= '<fieldset>';
+					$content .= '<legend>'.$fieldset.'</legend>';
 	
 					foreach($inputs as $input)
 					{
