@@ -386,22 +386,54 @@ class Kohana_Formr
 			
 			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
-				$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
-				$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
-				$content .= '<fieldset>';
-
-				foreach($inputs as $input)
+				if (is_array(current($inputs)))
 				{
-					if (isset($this->_output[$input]))
+					$list .= '<li class="dropdown">';
+					$list .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$fieldset.' <b class="caret"></b></a>';
+					$list .= '<ul class="dropdown-menu">';
+					
+					foreach($inputs as $key => $drop)
 					{
-						$content .= $this->_output[$input];	
+						$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$key)).'" class="tab-pane '.($active ? 'active' : '').'">';
+						$content .= '<fieldset>';
+						$list .= '<li><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$key)).'">'.$key.'</a></li>';
+
+						foreach($drop as $input)
+						{
+							if (isset($this->_output[$input]))
+							{
+								$content .= $this->_output[$input];	
+							}
+						}
+						
+						$content .= '</fieldset>';
+						$content .= '</div>';
 					}
+					
+					$list .= '</ul>';
+					$list .= '</li>';
+					
+					$active = false;
 				}
-				
-				$content .= '</fieldset>';
-				$content .= '</div>';
-				
-				$active = false;
+				else
+				{
+					$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
+					$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
+					$content .= '<fieldset>';
+	
+					foreach($inputs as $input)
+					{
+						if (isset($this->_output[$input]))
+						{
+							$content .= $this->_output[$input];	
+						}
+					}
+					
+					$content .= '</fieldset>';
+					$content .= '</div>';
+					
+					$active = false;	
+				}
 			}
 			
 			$this->_string .= '<div class="tabbable">';
