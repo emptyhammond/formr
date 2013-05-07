@@ -386,22 +386,56 @@ class Kohana_Formr
 			
 			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
-				$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
-				$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
-				$content .= '<fieldset>';
-
-				foreach($inputs as $input)
+				if (is_array(current($inputs)))
 				{
-					if (isset($this->_output[$input]))
+					$list .= '<li class="dropdown">';
+					$list .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$fieldset.' <b class="caret"></b></a>';
+					$list .= '<ul class="dropdown-menu">';
+					
+					foreach($inputs as $tab => $fields)
 					{
-						$content .= $this->_output[$input];	
+						$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$tab)).'">'.$tab.'</a></li>';
+						
+						$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$tab)).'" class="tab-pane '.($active ? 'active' : '').'">';
+						$content .= '<fieldset>';
+						$content .= '<legend>'.$tab.'</legend>';
+		
+						foreach($fields as $field)
+						{
+							if (isset($this->_output[$field]))
+							{
+								$content .= $this->_output[$field];	
+							}
+						}	
+						
+						$content .= '</fieldset>';
+						$content .= '</div>';
+						
+						$active = false;
 					}
+					
+					$list .= '</ul>';
+					$list .= '</li>';	
 				}
-				
-				$content .= '</fieldset>';
-				$content .= '</div>';
-				
-				$active = false;
+				else
+				{
+					$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
+					$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
+					$content .= '<fieldset>';
+					$content .= '<legend>'.$fieldset.'</legend>';
+					foreach($inputs as $input)
+					{
+						if (isset($this->_output[$input]))
+						{
+							$content .= $this->_output[$input];	
+						}
+					}
+					
+					$content .= '</fieldset>';
+					$content .= '</div>';
+					
+					$active = false;	
+				}
 			}
 			
 			$this->_string .= '<div class="tabbable">';
