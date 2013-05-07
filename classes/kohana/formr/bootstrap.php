@@ -610,7 +610,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		{
 			if (!$multi)
 			{
-				$opts = array('0' => '-- '.$relation['model'].' --');
+				$opts = array('' => '-- '.$relation['model'].' --');
 			}
 			else
 			{
