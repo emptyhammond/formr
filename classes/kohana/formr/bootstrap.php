@@ -250,7 +250,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 				'type' => 'date',
 				'class' => 'date '.$options['classes'][$column['column_name']],
 			), $disabled, (isset($options['attributes'][$column['column_name']]) ? $options['attributes'][$column['column_name']] : array())));
-		
+
 		$output .= ' '.Form::select('hour['.$column['column_name'].']', $hours, ($object->{$column['column_name']} ? date('H',$object->{$column['column_name']}) : '09'), array('type' => 'number', 'class' => 'input-mini hour-datetime'));
 		
 		$output .= ' <label class="label-datetime" for=":">:</label> ';
