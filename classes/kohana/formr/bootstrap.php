@@ -18,7 +18,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function open($path = '', array $array = array())
 	{
-		$defaults = array('class' => 'well form-horizontal', 'method' => false);
+		$defaults = array('class' => 'form-horizontal', 'method' => false);
 
 		$options = array_merge($defaults, $array);
 

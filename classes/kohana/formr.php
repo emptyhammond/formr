@@ -44,6 +44,8 @@ class Kohana_Formr
 		'filters' => array(),
 		'display' => array(),
 		'attributes' => array(),
+		'tabs' => false,
+		'html' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -154,6 +156,16 @@ class Kohana_Formr
 			$this->_options['attributes'] = array_merge($this->_options['attributes'], $options['attributes']);
 		}
 		
+		if (isset($options['tabs']))
+		{
+			$this->_options['tabs'] = $options['tabs'];
+		}
+		
+		if (isset($options['html']))
+		{
+			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
+		}
+		
 		if ($_POST)
 		{
 			$this->_object->values($_POST);
@@ -252,7 +264,11 @@ class Kohana_Formr
 			}
 			else
 			{
-				if ($func === 'select')
+				if ($func === 'html')
+				{
+					$this->_output[$additional] = $this->_options['html'][$additional];
+				}
+				elseif ($func === 'select')
 				{
 					$this->_output[$additional] = $formr::$func($column, false, $this->_object, $this->_options);					
 				}
@@ -362,7 +378,77 @@ class Kohana_Formr
 		
 		$this->_string .= implode("\n", $this->_hidden);
 		
-		if (is_array($this->_options['fieldsets']))
+		if ($this->_options['tabs'] and is_array($this->_options['fieldsets']))
+		{
+			$list = '';
+			$content = '';
+			$active = true;
+			
+			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
+			{
+				if (is_array(current($inputs)))
+				{
+					$list .= '<li class="dropdown">';
+					$list .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$fieldset.' <b class="caret"></b></a>';
+					$list .= '<ul class="dropdown-menu">';
+					
+					foreach($inputs as $tab => $fields)
+					{
+						$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$tab)).'">'.$tab.'</a></li>';
+						
+						$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$tab)).'" class="tab-pane '.($active ? 'active' : '').'">';
+						$content .= '<fieldset>';
+						$content .= '<legend>'.$tab.'</legend>';
+		
+						foreach($fields as $field)
+						{
+							if (isset($this->_output[$field]))
+							{
+								$content .= $this->_output[$field];	
+							}
+						}	
+						
+						$content .= '</fieldset>';
+						$content .= '</div>';
+						
+						$active = false;
+					}
+					
+					$list .= '</ul>';
+					$list .= '</li>';	
+				}
+				else
+				{
+					$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
+					$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
+					$content .= '<fieldset>';
+					$content .= '<legend>'.$fieldset.'</legend>';
+					foreach($inputs as $input)
+					{
+						if (isset($this->_output[$input]))
+						{
+							$content .= $this->_output[$input];	
+						}
+					}
+					
+					$content .= '</fieldset>';
+					$content .= '</div>';
+					
+					$active = false;	
+				}
+			}
+			
+			$this->_string .= '<div class="tabbable">';
+			$this->_string .= '<ul class="nav nav-tabs">';
+			$this->_string .= $list;
+			$this->_string .= '</ul>';
+			$this->_string .= '<div class="tab-content">';
+			$this->_string .= $content;
+			$this->_string .= $formr::actions($this->_options);						
+			$this->_string .= '</div>';
+			$this->_string .= '</div>';
+		}
+		elseif (is_array($this->_options['fieldsets']))
 		{
 			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
 			{
@@ -379,15 +465,16 @@ class Kohana_Formr
 				
 				$this->_string .= '</fieldset>';
 			}
+			
+			$this->_string .= $formr::actions($this->_options);
 		}
 		else
 		{
 			$this->_string .= '<fieldset>';
 			$this->_string .= '<legend>'.$this->_options['legend'].'</legend>';
 			$this->_string .= implode("\n", $this->_output);
+			$this->_string .= $formr::actions($this->_options);
 		}
-				
-		$this->_string .= $formr::actions($this->_options);
 		
 		if (!(sizeof($this->_options['fieldsets'] > 0)))
 		{
