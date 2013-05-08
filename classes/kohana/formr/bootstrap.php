@@ -128,8 +128,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		$output = '<div class="control-group'.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
 		$output .= self::label($column, $options);
 		$output .= '<div class="controls">';
-
-		$output .= Form::input($column['column_name'],($object->{$column['column_name']} ? $object->{$column['column_name']} : (isset($column['default']) ? $column['default'] : '')),
+		$output .= Form::input($column['column_name'],($object->{$column['column_name']} ? $object->{$column['column_name']} : (isset($options['values'][$column['column_name']]) ? $options['values'][$column['column_name']] : (isset($column['default']) ? $column['default'] : ''))),
 			Arr::merge(array(
 				'type' => 'number',
 				'min' => (isset($column['min']) ? $column['min'] : 0),
@@ -585,7 +584,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		{
 			if (!$multi)
 			{
-				$opts = array('0' => '-- '.$relation['model'].' --');
+				$opts = array('' => '-- '.$relation['model'].' --');
 			}
 			else
 			{
@@ -724,12 +723,12 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		}
 
 		$output = '';
-		$output .= '<div class="control-group'.(isset($options['errors'][$relation['relation_name']]) ? ' error': '').'">';
+		$output .= '<div class="control-group'.((isset($options['errors'][$relation['relation_name']]) or isset($options['errors'][$relation['foreign_key']])) ? ' error': '').'">';
 		$output .= self::label(array('column_name' => $relation['relation_name']), $options);
 		$output .= '<div class="controls">';
 		$output .= Form::select($name, $opts, $selected, $attributes);
 		$output .= (isset($options['help'][$relation['relation_name']]) or isset($options['errors'][$relation['relation_name']]))
-		? '<p class="help-block">'.(isset($options['errors'][$relation['relation_name']]) ? $options['errors'][$relation['relation_name']]: $options['help'][$relation['relation_name']]).'</p>'
+		? '<p class="help-block">'.(isset($options['errors'][$relation['relation_name']]) ? $options['errors'][$relation['relation_name']] : (isset($options['errors'][$relation['foreign_key']]) ? $options['errors'][$relation['foreign_key']] : $options['help'][$relation['relation_name']])).'</p>'
 		: '';
 		$output .= '</div>';
 		$output .= '</div>';
