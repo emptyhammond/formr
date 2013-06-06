@@ -723,7 +723,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		}
 
 		$output = '';
-		$output .= '<div class="control-group'.((isset($options['errors'][$relation['relation_name']]) or isset($options['errors'][$relation['foreign_key']])) ? ' error': '').'">';
+		$output .= '<div class="control-group'.((isset($options['errors'][$relation['relation_name']]) or isset($options['errors'][$relation['relation_name']])) ? ' error': '').'">';
 		$output .= self::label(array('column_name' => $relation['relation_name']), $options);
 		$output .= '<div class="controls">';
 		$output .= Form::select($name, $opts, $selected, $attributes);
