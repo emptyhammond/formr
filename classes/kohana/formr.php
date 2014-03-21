@@ -380,7 +380,7 @@ class Kohana_Formr
 			$this->_output = $order;
 		}
 		
-		$this->_string = $formr::open(null, array('enctype' => $this->_options['enctype']));
+		$this->_string = $formr::open($this->_options['enctype'], array('enctype' => $this->_options['enctype']));
 		
 		$this->_string .= implode("\n", $this->_hidden);
 		
