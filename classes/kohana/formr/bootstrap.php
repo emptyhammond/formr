@@ -22,7 +22,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		$options = array_merge($defaults, $array);
 
-		$output = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
+		$output = Form::open($option['action'], array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
 
 		return $output;
 	}
