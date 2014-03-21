@@ -63,6 +63,11 @@ class Kohana_Formr
 		}
 		unset($class);
 		
+		if (isset($options['action']))
+		{
+			$this->_options['action'] = $options['action'];
+		}
+		
 		if (isset($options['actions']))
 		{
 			$this->_options['actions'] = $options['actions'];
