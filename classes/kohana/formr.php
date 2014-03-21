@@ -24,6 +24,7 @@ class Kohana_Formr
 	protected $_column_names = array();
 	
 	protected $_options = array(
+		'action' => null,
 		'actions' => false,
 		'enctype' => 'application/x-www-form-urlencoded', //application/x-www-form-urlencoded|multipart/form-data
 		'exclude' => array(),
