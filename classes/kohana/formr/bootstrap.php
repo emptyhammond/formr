@@ -58,7 +58,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			{
 				$parameters = array_merge(array('name' => 'name', 'value' => 'value', 'attributes' => array('class' => 'btn')), $parameters);
 
-				$output .= call_user_func(__NAMESPACE__ .'$this->'.$parameters['type'], $name, $parameters['value'], $parameters['attributes']);
+				$output .= call_user_func(__NAMESPACE__ .'Self::'.$parameters['type'], $name, $parameters['value'], $parameters['attributes']);
 			}
 		}
 		else
