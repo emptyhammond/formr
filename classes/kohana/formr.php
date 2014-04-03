@@ -47,6 +47,7 @@ class Kohana_Formr
 		'attributes' => array(),
 		'tabs' => false,
 		'html' => array(),
+		'open' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -170,6 +171,11 @@ class Kohana_Formr
 		if (isset($options['html']))
 		{
 			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
+		}
+		
+		if (isset($options['open']))
+		{
+			$this->_options['open'] = array_merge($this->_options['open'], $options['open']);
 		}
 		
 		if ($_POST)
@@ -380,7 +386,7 @@ class Kohana_Formr
 			$this->_output = $order;
 		}
 		
-		$this->_string = $formr::open($this->_options['action'], array('enctype' => $this->_options['enctype']));
+		$this->_string = $formr::open(null, $this->_options);
 		
 		$this->_string .= implode("\n", $this->_hidden);
 		
