@@ -24,9 +24,9 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 		
 		$output = Form::open(null, array(
 			'enctype' => $array['enctype'], 
-			'method' => ($options['method'] ? $options['method'] : 'post'), 
-			'class' => $options['class'], 
-			'id' => ($options['id'] ? $options['id'] : null),
+			'method' => (isset($options['method']) ? $options['method'] : 'post'), 
+			'class' => (isset($options['class']) ? $options['class'] : null),
+			'id' => (isset($options['id']) ? $options['id'] : null),
 		));
 
 		return $output;
