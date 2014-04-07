@@ -26,7 +26,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			'enctype' => $array['enctype'], 
 			'method' => ($options['method'] ? $options['method'] : 'post'), 
 			'class' => $options['class'], 
-			'id' => $options['id']
+			'id' => ($options['id'] ? $options['id'] : null),
 		));
 
 		return $output;
