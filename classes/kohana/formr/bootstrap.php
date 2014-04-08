@@ -18,7 +18,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 	 */
 	protected static function open($path = '', array $array = array())
 	{
-		$defaults = array('class' => 'form-horizontal', 'method' => false);
+		$defaults = array('class' => 'form-horizontal', 'method' => 'post');
 
 		$options = array_merge($defaults, $array['open']);
 		
@@ -822,7 +822,7 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 			$items = $query->find_all();
 
 			$output .= '<div class="control-group">';
-	        $output .= self::label(array('column_name' => $relation['relation_name']));
+	        $output .= self::label(array('column_name' => $relation['relation_name']),array());
 	        $output .= '<div class="controls">';
 
 	        foreach($items as $option)
