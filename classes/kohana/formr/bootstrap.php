@@ -165,11 +165,11 @@ class Kohana_Formr_Bootstrap extends Kohana_Formr
 
 		if ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
 		{
-			$value = date('d-m-Y',$object->{$column['column_name']});
+			$value = date('Y-m-d',$object->{$column['column_name']});
 		}
 		elseif (isset($options['values'][$column['column_name']]))
 		{
-			$value = date('d-m-Y',$options['values'][$column['column_name']]);
+			$value = date('Y-m-d',$options['values'][$column['column_name']]);
 		}
 		elseif(isset($column['default']))
 		{
