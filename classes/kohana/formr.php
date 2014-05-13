@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-error_reporting(E_ALL);
+
 /**
  * Kohana_Formr class.
  *
@@ -24,7 +24,6 @@ class Kohana_Formr
 	protected $_column_names = array();
 	
 	protected $_options = array(
-		'action' => null,
 		'actions' => false,
 		'enctype' => 'application/x-www-form-urlencoded', //application/x-www-form-urlencoded|multipart/form-data
 		'exclude' => array(),
@@ -47,7 +46,6 @@ class Kohana_Formr
 		'attributes' => array(),
 		'tabs' => false,
 		'html' => array(),
-		'open' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -63,11 +61,6 @@ class Kohana_Formr
 			$class = '';
 		}
 		unset($class);
-		
-		if (isset($options['action']))
-		{
-			$this->_options['action'] = $options['action'];
-		}
 		
 		if (isset($options['actions']))
 		{
@@ -173,11 +166,6 @@ class Kohana_Formr
 			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
 		}
 		
-		if (isset($options['open']))
-		{
-			$this->_options['open'] = array_merge($this->_options['open'], $options['open']);
-		}
-		
 		if ($_POST)
 		{
 			$this->_object->values($_POST);
@@ -194,9 +182,9 @@ class Kohana_Formr
 		return new Kohana_Formr($model, $id, $options);
 	}
 	
-	public function render($flavour = 'default')
+	public function render($views = 'default')
 	{
-		$formr = 'Formr_'.ucfirst($flavour);
+		$formr = 'Formr_Render';
 		
 		$hidden = array();
 		
@@ -386,7 +374,7 @@ class Kohana_Formr
 			$this->_output = $order;
 		}
 		
-		$this->_string = $formr::open(null, $this->_options);
+		$this->_string = $formr::open(null, array('enctype' => $this->_options['enctype']));
 		
 		$this->_string .= implode("\n", $this->_hidden);
 		
