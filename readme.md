@@ -28,13 +28,15 @@ Formr::edit requires an additonal *id* parameter to render the objects propertie
 |fieldsets|boolean|false|'name' => 'organisation'|
 |additional|array|array()|'password_confirm'|
 |legend|string|''|'Form'|
-|sources|array|array()||
-|order|mixed|false||
-|values|array|array()||
-|filters|array|array()||
-|display|array|array()||
-|attributes|array|array()||
-|tabs|false|false||
-|html|array|array()||
+|sources|array|array()|array('title' => array('mr' => 'Mr', 'mrs' => 'Mrs', 'miss' => 'Miss', 'dr' => 'Dr')|
+|order|mixed|false|array('name','email','address')|
+|values|array|array()|array('date' => time())|
+|filters|array|array()|'filters' => array('organization' => array('order_by' => array(array('name','ASC'))),),|
+|display|array|array()|array('name' => 'fullname')|
+|attributes|array|array()|array('name' => array('required' => true))|
+|tabs|false|false|true|
+|html|array|array()|array('name' => View::factory('name/input')->render())|
 ###Basic Example
+Formr::create('person')->render();
 ###ComplexExample
+Coming Soon
