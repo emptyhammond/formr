@@ -1,5 +1,5 @@
 <?php
-echo  = '<div class="control-group">';
+echo '<div class="control-group">';
 echo Formr_Render::label($column, $options);
 echo '<div class="controls">';
 echo '<label class="checkbox inline">';
