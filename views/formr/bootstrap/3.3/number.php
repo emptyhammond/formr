@@ -1,7 +1,7 @@
 <?php
 $disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
-echo '<div class="form-group'.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
+echo '<div class="form-group'.(isset($options['errors'][$column['column_name']]) ? ' has-error': '').'">';
 echo Formr_Render::label($column, $options);
 echo '<div class="col-sm-10">';
 

@@ -1,5 +1,5 @@
 <?php
-echo '<div class="form-group'.(isset($options['errors'][$relation['relation_name']]) ? ' error': '').'">';
+echo '<div class="form-group'.(isset($options['errors'][$relation['relation_name']]) ? ' has-error': '').'">';
 echo Formr_Render::label(array('column_name' => $relation['relation_name']), $options);
 echo '<div class="col-sm-10">';
 if (isset($attributes['class']))

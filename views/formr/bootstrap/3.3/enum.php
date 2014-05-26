@@ -1,5 +1,5 @@
 <?php
-echo '<div class="form-group'.(isset($options['errors'][$column['column_name']]) ? ' error': '').'">';
+echo '<div class="form-group'.(isset($options['errors'][$column['column_name']]) ? ' has-error': '').'">';
 echo Formr_Render::label(array('column_name' => $column['column_name']), $options);
 echo '<div class="col-sm-10">';
 if (isset($attributes['classes']))
