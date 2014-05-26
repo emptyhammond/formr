@@ -734,6 +734,8 @@ class Kohana_Formr_Render extends Kohana_Formr
 			->bind('items',$items)
 			->bind('opts',$opts)
 			->bind('disabled',$disabled)
+			->bind('name',$name)
+			->bind('plural',$plural)
 			->bind('column',$column)
 			->bind('object',$object)
 			->render();
