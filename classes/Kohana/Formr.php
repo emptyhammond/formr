@@ -293,7 +293,7 @@ class Kohana_Formr
 
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if ($this->_options['types'][$model['relation_name']] === 'html')
+				if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
 				{
 					$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
 				}
@@ -318,7 +318,7 @@ class Kohana_Formr
 						
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if ($this->_options['types'][$model['relation_name']] === 'html')
+				if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
 				{
 					$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
 				}
@@ -345,7 +345,7 @@ class Kohana_Formr
 			{
 				if (isset($this->_options['types'][$model['relation_name']]))
 				{
-					if ($this->_options['types'][$model['relation_name']] === 'html')
+					if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
 					{
 						$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
 					}
@@ -360,7 +360,7 @@ class Kohana_Formr
 					}
 					else
 					{
-						$type = $this->_options['types'][Inflector::plural($model['model'])];
+						$type = isset($this->_options['types'][$model['relation_name']]) ? $this->_options['types'][$model['relation_name']] : 'select';
 						
 						$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 					}
