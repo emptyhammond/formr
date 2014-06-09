@@ -7,7 +7,7 @@ if ($options['actions'])
 	{
 		$parameters = array_merge(array('name' => 'name', 'value' => 'value', 'attributes' => array('class' => 'btn')), $parameters);
 
-		echo call_user_func(__NAMESPACE__ .'$this->'.$parameters['type'], $name, $parameters['value'], $parameters['attributes']);
+		echo call_user_func(__NAMESPACE__ .'Formr_Render::'.$parameters['type'], $name, $parameters['value'], $parameters['attributes']);
 	}
 }
 else
