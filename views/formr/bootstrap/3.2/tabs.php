@@ -60,6 +60,6 @@ echo $list;
 echo '</ul>';
 echo '<div class="tab-content">';
 echo $content;
-echo $formr::actions($this->_options);						
+echo $formr::actions($options);						
 echo '</div>';			
 echo '</div>';
