@@ -72,7 +72,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 	 * @static
 	 * @return void
 	 */
-	protected static function actions($options)
+	public static function actions($options)
 	{
 		return View::factory(Kohana::$config->load('formr.render').'/actions')->bind('options',$options)->render();
 	}
