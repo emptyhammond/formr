@@ -590,7 +590,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 				}
 				else
 				{
-					$selected = isset($object->{$relation['relation_name']}) ? $object->{$relation['relation_name']}->pk() : 0;
+					$selected = $object->{$relation['relation_name']}->loaded() ? $object->{$relation['relation_name']}->pk() : (isset($options['default'][$relation['relation_name']]) ? $options['default'][$relation['relation_name']] : 0);
 				}
 			}
 		}
