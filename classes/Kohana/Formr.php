@@ -46,6 +46,7 @@ class Kohana_Formr
 		'attributes' => array(),
 		'tabs' => false,
 		'html' => array(),
+		'default' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -164,6 +165,11 @@ class Kohana_Formr
 		if (isset($options['html']))
 		{
 			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
+		}
+		
+		if (isset($options['default']))
+		{
+			$this->_options['default'] = array_merge($this->_options['default'], $options['default']);
 		}
 		
 		if ($_POST)
