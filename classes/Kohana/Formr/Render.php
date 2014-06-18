@@ -341,7 +341,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
-		if ((boolean) $object->{$column['column_name']})
+		if ((boolean) isset($object->{$column['column_name']}) and $object->{$column['column_name']})
 		{
 			$value = $object->{$column['column_name']};
 		}		
