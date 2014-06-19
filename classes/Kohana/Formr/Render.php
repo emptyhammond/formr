@@ -155,7 +155,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 			$value = '';
 		}
 
-		return View::factory(Kohana::$config->load('formr.render').'/date')->bind('value',$value)->bind('column',$column)->bind('object',$object)->bind('options',$options)->render();
+		return View::factory(Kohana::$config->load('formr.render').'/date')->bind('disabled',$disabled)->bind('value',$value)->bind('column',$column)->bind('object',$object)->bind('options',$options)->render();
 	}
 	
 	
