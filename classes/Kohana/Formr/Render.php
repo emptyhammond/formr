@@ -405,11 +405,11 @@ class Kohana_Formr_Render extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
-		$options = array();
+		$opts = array();
 
 		foreach($column['options'] as $option)
 		{
-			$options[$option] = $option;
+			$opts[$option] = $option;
 		}
 		unset($option);
 
@@ -424,7 +424,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 			$selected = $object->{$column['column_name']};
 		}
 		
-		return View::factory(Kohana::$config->load('formr.render').'/enum')->bind('selected',$selected)->bind('options',$options)->bind('attributes',$attributes)->bind('disabled',$disabled)->bind('column',$column)->bind('object',$object)->bind('options',$options)->render();
+		return View::factory(Kohana::$config->load('formr.render').'/enum')->bind('selected',$selected)->bind('options',$options)->bind('attributes',$attributes)->bind('disabled',$disabled)->bind('column',$column)->bind('object',$object)->bind('opts',$opts)->render();
 	}
 
 	/**
