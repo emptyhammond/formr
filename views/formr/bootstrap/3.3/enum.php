@@ -10,7 +10,7 @@ else
 {
 	$attributes['class'] = 'form-control';
 }
-echo Form::select($column['column_name'], $options, $selected, $attributes);
+echo Form::select($column['column_name'], $opts, $selected, $attributes);
 echo (isset($options['help'][$column['column_name']]) or isset($options['errors'][$column['column_name']]))
 ? '<p class="help-block">'.(isset($options['errors'][$column['column_name']]) ? $options['errors'][$column['column_name']]: $options['help'][$column['column_name']]).'</p>'
 : '';
