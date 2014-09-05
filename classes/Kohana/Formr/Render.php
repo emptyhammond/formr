@@ -452,6 +452,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 		if (isset($options['sources'][$relation['relation_name']])) // An array source is specified
 		{
 			$opts = $options['sources'][$relation['relation_name']];
+			$attributes['name'] = $name = ($multi) ? $name.'[]' : $relation['foreign_key'];
 		}
 		else //treat as ORM relation
 		{
