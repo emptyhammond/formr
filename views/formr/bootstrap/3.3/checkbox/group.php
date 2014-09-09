@@ -23,8 +23,19 @@ foreach($items as $option)
 
 	echo '<label class="checkbox inline">';
 	echo '<input type="checkbox" name="'.$name.'" id="'.$relation['model'].$option->pk().'" value="'.$option->pk().'"';
-	echo (!$_POST and $object->has($plural, $option->pk())) ? ' checked="checked"' : '';
-	echo (isset($_POST[$plural]) and in_array($option->pk(),$_POST[$plural])) ? ' checked="checked"' : '';
+
+	if (!$_POST and $object->has($plural, $option->pk()))
+	{
+		echo ' checked="checked"';
+	}
+	elseif (isset($_POST[$plural]) and in_array($option->pk(),$_POST[$plural]))
+	{
+		echo ' checked="checked"';
+	} 
+	elseif (isset($options['values'][$plural]) and in_array($option->pk(), $options['values'][$plural]))
+	{
+		echo ' checked="checked"';
+	}
 	echo ' />';
 	echo $display_value;
 	echo '</label>';
