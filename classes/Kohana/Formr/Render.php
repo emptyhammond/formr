@@ -394,6 +394,34 @@ class Kohana_Formr_Render extends Kohana_Formr
 	}
 
 	/**
+	 * file plus function - file input with file download if existing value
+	 *
+	 * @access protected
+	 * @static
+	 * @param mixed $column
+	 * @return void
+	 */
+	protected static function file_plus($column, $object, $options)
+	{
+		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
+
+		if (isset($options['values'][$column['column_name']]))
+		{
+			$path = $options['values'][$column['column_name']];
+		}
+		elseif ((boolean) isset($object->{$column['column_name']}) and $object->{$column['column_name']})
+		{
+			$path = $object->{$column['column_name']};
+		}		
+		else
+		{
+			$path = FALSE;
+		}
+
+		return View::factory(Kohana::$config->load('formr.render').'/file_plus')->bind('disabled',$disabled)->bind('column',$column)->bind('object',$object)->bind('options',$options)->bind('path', $path)->render();
+	}
+
+	/**
 	 * enum function.
 	 *
 	 * @access protected
