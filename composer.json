@@ -1,5 +1,5 @@
 {
-	"name"       :"Formr",
+	"name"       :"formr",
 	"description":"ORM form generator",
 	"keywords"   :["kohana", "orm", "forms"],
 	"license"    :"BSD-3-Clause",
@@ -10,7 +10,7 @@
 		}
 	],
 	"require": {
-	  "php": ">=5.3.3",
+		"php": ">=5.3.3",
 		"kohana/core" : "3.3.*",
 		"kohana/orm" : "3.3.*"
 	}
