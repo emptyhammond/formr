@@ -12,6 +12,6 @@
 	"require": {
 	  "php": ">=5.3.3",
 		"kohana/core" : "3.3.*",
-		"kohana/orm" : "3.3.*",
+		"kohana/orm" : "3.3.*"
 	}
 }
