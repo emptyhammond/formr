@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-error_reporting(E_ALL);
+
 /**
  * Kohana_Formr class.
  *
@@ -46,6 +46,7 @@ class Kohana_Formr
 		'attributes' => array(),
 		'tabs' => false,
 		'html' => array(),
+		'default' => array(),
 	);
 	
 	private function __construct($model, $id = null, $options)
@@ -166,6 +167,11 @@ class Kohana_Formr
 			$this->_options['html'] = array_merge($this->_options['html'], $options['html']);
 		}
 		
+		if (isset($options['default']))
+		{
+			$this->_options['default'] = array_merge($this->_options['default'], $options['default']);
+		}
+		
 		if ($_POST)
 		{
 			$this->_object->values($_POST);
@@ -182,15 +188,17 @@ class Kohana_Formr
 		return new Kohana_Formr($model, $id, $options);
 	}
 	
-	public function render($flavour = 'default')
+	public function render($views = 'default')
 	{
-		$formr = 'Formr_'.ucfirst($flavour);
+		$formr = 'Formr_Render';
 		
 		$hidden = array();
 		
 		$belongs_to = array();
 		
 		$has_one = array();
+		
+		$html = array();
 		
 		foreach($this->_object->belongs_to() as $model)
 		{
@@ -202,9 +210,14 @@ class Kohana_Formr
 			array_push($has_one, $model['foreign_key']);
 		}
 		
+		foreach($this->_options['html'] as $key => $value)
+		{
+			array_push($html, $key);
+		}
+		
 		foreach($this->_object->list_columns() as $column)
 		{
-			if ( ! in_array($column['column_name'], array_merge($this->_options['exclude'], $has_one, $belongs_to)))
+			if ( ! in_array($column['column_name'], array_merge($this->_options['exclude'], $has_one, $belongs_to, $html)))
 			{
 				if (isset($this->_options['types'][$column['column_name']]))
 				{
@@ -286,7 +299,11 @@ class Kohana_Formr
 
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset($this->_options['types'][$model['foreign_key']]) or isset($this->_options['types'][$name]))
+				if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
+				{
+					$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
+				}
+				elseif (isset($this->_options['types'][$model['foreign_key']]) or isset($this->_options['types'][$name]))
 				{
 					$type = isset($this->_options['types'][$model['foreign_key']]) ? $this->_options['types'][$model['foreign_key']] : $this->_options['types'][$name];
 					
@@ -307,7 +324,11 @@ class Kohana_Formr
 						
 			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset($this->_options['types'][$model['foreign_key']]))
+				if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
+				{
+					$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
+				}
+				elseif (isset($this->_options['types'][$model['foreign_key']]))
 				{
 					$type = $this->_options['types'][$model['foreign_key']];
 										
@@ -326,11 +347,15 @@ class Kohana_Formr
 			$model['relation_name'] = $name;
 			$model['column_name'] = $name;			
 
-			if ( ! in_array($model['relation_name'], $this->_options['exclude']))
+			if (!in_array($model['relation_name'], $this->_options['exclude']))
 			{
-				if (isset($this->_options['types'][Inflector::plural($model['model'])]))
+				if (isset($this->_options['types'][$model['relation_name']]))
 				{
-					if ($this->_options['types'][Inflector::plural($model['model'])] === 'hidden')
+					if (isset($this->_options['types'][$model['relation_name']]) and $this->_options['types'][$model['relation_name']] === 'html')
+					{
+						$this->_output[$model['relation_name']] = $this->_options['html'][$model['relation_name']];
+					}
+					elseif ($this->_options['types'][$model['relation_name']] === 'hidden')
 					{
 						foreach($this->_object->{$name}->find_all() as $i => $relation)
 						{
@@ -341,7 +366,7 @@ class Kohana_Formr
 					}
 					else
 					{
-						$type = $this->_options['types'][Inflector::plural($model['model'])];
+						$type = isset($this->_options['types'][$model['relation_name']]) ? $this->_options['types'][$model['relation_name']] : 'select';
 						
 						$this->_output[$model['relation_name']] = $formr::$type($model, $this->_object, $this->_options);
 					}
@@ -379,74 +404,15 @@ class Kohana_Formr
 		$this->_string .= implode("\n", $this->_hidden);
 		
 		if ($this->_options['tabs'] and is_array($this->_options['fieldsets']))
-		{
-			$list = '';
-			$content = '';
-			$active = true;
-			
-			foreach($this->_options['fieldsets'] as $fieldset => $inputs)
-			{
-				if (is_array(current($inputs)))
-				{
-					$list .= '<li class="dropdown">';
-					$list .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$fieldset.' <b class="caret"></b></a>';
-					$list .= '<ul class="dropdown-menu">';
-					
-					foreach($inputs as $tab => $fields)
-					{
-						$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$tab)).'">'.$tab.'</a></li>';
-						
-						$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$tab)).'" class="tab-pane '.($active ? 'active' : '').'">';
-						$content .= '<fieldset>';
-						$content .= '<legend>'.$tab.'</legend>';
-		
-						foreach($fields as $field)
-						{
-							if (isset($this->_output[$field]))
-							{
-								$content .= $this->_output[$field];	
-							}
-						}	
-						
-						$content .= '</fieldset>';
-						$content .= '</div>';
-						
-						$active = false;
-					}
-					
-					$list .= '</ul>';
-					$list .= '</li>';	
-				}
-				else
-				{
-					$list .= '<li class="'.($active ? 'active' : '').'"><a data-toggle="tab" href="#'.strtolower(preg_replace('/\s*/', '',$fieldset)).'">'.$fieldset.'</a></li>';
-					$content .= '<div id="'.strtolower(preg_replace('/\s*/', '',$fieldset)).'" class="tab-pane '.($active ? 'active' : '').'">';
-					$content .= '<fieldset>';
-					$content .= '<legend>'.$fieldset.'</legend>';
-					foreach($inputs as $input)
-					{
-						if (isset($this->_output[$input]))
-						{
-							$content .= $this->_output[$input];	
-						}
-					}
-					
-					$content .= '</fieldset>';
-					$content .= '</div>';
-					
-					$active = false;	
-				}
-			}
-			
-			$this->_string .= '<div class="tabbable">';
-			$this->_string .= '<ul class="nav nav-tabs">';
-			$this->_string .= $list;
-			$this->_string .= '</ul>';
-			$this->_string .= '<div class="tab-content">';
-			$this->_string .= $content;
-			$this->_string .= $formr::actions($this->_options);						
-			$this->_string .= '</div>';
-			$this->_string .= '</div>';
+		{	
+			$this->_string .= View::factory(Kohana::$config->load('formr.render').'/tabs')
+								->set('list','')
+								->set('content','')
+								->set('active',true)
+								->bind('options',$this->_options)
+								->bind('output',$this->_output)
+								->bind('formr',$formr)
+								->render();
 		}
 		elseif (is_array($this->_options['fieldsets']))
 		{
@@ -473,12 +439,8 @@ class Kohana_Formr
 			$this->_string .= '<fieldset>';
 			$this->_string .= '<legend>'.$this->_options['legend'].'</legend>';
 			$this->_string .= implode("\n", $this->_output);
-			$this->_string .= $formr::actions($this->_options);
-		}
-		
-		if (!(sizeof($this->_options['fieldsets'] > 0)))
-		{
 			$this->_string .= '</fieldset>';
+			$this->_string .= $formr::actions($this->_options);
 		}
 		
 		$this->_string .= $formr::close();
