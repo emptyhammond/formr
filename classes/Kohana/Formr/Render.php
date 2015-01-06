@@ -42,7 +42,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 	 */
 	protected static function open($path = '', array $array = array())
 	{
-		$defaults = array('class' => 'form-horizontal', 'method' => false);
+		$defaults = array('class' => 'form-horizontal', 'method' => false, 'id' => false);
 
 		$options = array_merge($defaults, $array);
 
