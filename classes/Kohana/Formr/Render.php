@@ -46,7 +46,7 @@ class Kohana_Formr_Render extends Kohana_Formr
 
 		$options = array_merge($defaults, $array);
 
-		$output = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class']));
+		$output = Form::open(null, array('enctype' => $options['enctype'], 'method' => ($options['method'] ? $options['method'] : 'post'), 'class' => $options['class'], 'id' => $options['id']));
 
 		return $output;
 	}
