@@ -138,13 +138,13 @@ class Kohana_Formr_Render extends Kohana_Formr
 	{
 		$disabled = in_array($column['column_name'], $options['disabled']) ? array('disabled' => true) : array();
 
-		if ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
-		{
-			$value = date('Y-m-d',$object->{$column['column_name']});
-		}
-		elseif (isset($options['values'][$column['column_name']]))
+		if (isset($options['values'][$column['column_name']]))
 		{
 			$value = date('Y-m-d',$options['values'][$column['column_name']]);
+		}
+		elseif ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
+		{
+			$value = date('Y-m-d',$object->{$column['column_name']});
 		}
 		elseif(isset($column['default']))
 		{
@@ -187,13 +187,13 @@ class Kohana_Formr_Render extends Kohana_Formr
 			$minutes[ (string) sprintf("%02u", $i)] = sprintf("%02u", $i);
 		}
 		
-		if ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
-		{
-			$value = date('Y-m-d',$object->{$column['column_name']});
-		}
-		elseif (isset($options['values'][$column['column_name']]))
+		if (isset($options['values'][$column['column_name']]))
 		{
 			$value = date('Y-m-d',$options['values'][$column['column_name']]);
+		}
+		elseif ($object->{$column['column_name']} and is_numeric($object->{$column['column_name']}))
+		{
+			$value = date('Y-m-d',$object->{$column['column_name']});
 		}
 		elseif(isset($column['default']))
 		{
