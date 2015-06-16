@@ -32,7 +32,7 @@ foreach($items as $option)
 	{
 		echo ' checked="checked"';
 	} 
-	elseif (isset($options['values'][$plural]) and in_array($option->pk(), $options['values'][$plural]))
+	elseif (isset($_POST[$plural]) and in_array($option->pk(), is_array($_POST[$plural]) ? $_POST[$plural] : unserialize($_POST[$plural]) ))
 	{
 		echo ' checked="checked"';
 	}
