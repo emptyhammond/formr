@@ -28,7 +28,7 @@ foreach($items as $option)
 	{
 		echo ' checked="checked"';
 	}
-	elseif (isset($_POST[$plural]) and in_array($option->pk(),$_POST[$plural]))
+	elseif (isset($_POST[$plural]) and is_array($_POST[$plural]) and in_array($option->pk(),$_POST[$plural]))
 	{
 		echo ' checked="checked"';
 	} 
