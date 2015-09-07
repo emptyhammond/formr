@@ -180,12 +180,14 @@ class Kohana_Formr
 		
 		if ($_POST)
 		{
+			$post = array();
+			
 			foreach($_POST as $key => $value)
 			{
-				if (is_array($value)) $_POST[$key] = serialize($value);
+				if (is_array($value)) $post[$key] = serialize($value);
 			}
 			
-			$this->_object->values($_POST);
+			$this->_object->values($post);
 		}
 	}
 	
